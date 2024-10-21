@@ -16,7 +16,7 @@ import useUserStore from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
 
 // const SOCKET_SERVER_URL = "http://localhost:3000";
-const socket = io("http://13.60.38.12:4001");
+const socket = io(import.meta.env.VITE_server_url);
 const subsribeToken = (token: string)=>{
   socket.emit('subscribe', token);
 }  
