@@ -17,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
-import DhanAuth from "@/page/DhanAuth";
 interface FormValues {
   name_tag: string;
   u_id: string;

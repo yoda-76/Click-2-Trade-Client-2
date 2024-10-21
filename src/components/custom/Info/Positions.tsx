@@ -11,7 +11,7 @@ export default function Positions() {
   const { updateTslBase,updateSl, updateTarget, increaseSl, decreaseSl, increaseTarget, decreaseTarget } = useSlStore((state) => ({
     ...state,
   }));
-  const {master, selected}:{master: any, selected:string} = useAccountStore((state) => ({...state}));
+  const { selected}:{master: any, selected:string} = useAccountStore((state) => ({...state}));
 
   
   const [slValue, setSlValue] = useState<any>();
@@ -104,7 +104,7 @@ export default function Positions() {
                 position: v,
               }, {
                 withCredentials: true, // Ensure cookies are sent with the request
-              }).then((res) => {
+              }).then(() => {
                 toast.success(
                   `Squared off : ${v.symbolName}`,
                   {

@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function OrderBook(props: any) {
-  const {master, selected}:{master: any, selected:string} = useAccountStore((state) => ({...state}));
+  const {selected}:{master: any, selected:string} = useAccountStore((state) => ({...state}));
   const [orders, setOrders] = useState<any>({});
   useEffect(() => {
     (async () => {

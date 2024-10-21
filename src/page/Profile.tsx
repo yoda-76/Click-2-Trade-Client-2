@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import useUserStore from "@/store/userStore";
@@ -9,11 +8,7 @@ export default function Profile() {
     name,
     email,
     verified,
-    accounts,
-    updateAccounts,
     updateEmail,
-    updateName,
-    updateVerified,
   }: {
     name: string | null;
     email: string | null;
@@ -26,8 +21,6 @@ export default function Profile() {
   } = useUserStore((state) => ({ ...state }));
   const navigate = useNavigate();
 
-  const [accountId, setAccountId] = useState<string | null>(null);
-  const [childAccounts, setChildAccounts] = useState<any[]>([]);
 
 
 

@@ -5,7 +5,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOrderParameterStore from "@/store/orderParameterStore";
 import useSymbolStore from "@/store/symbolStore";
-import useLtpStore from "@/store/ltpStore";
 import useAccountStore from "@/store/accountStore";
 import usePositionStore from "@/store/positionStore";
 import useSlStore from "@/store/slStore";
@@ -33,10 +32,6 @@ function extractId(input: string): {
 }
 
 export default function Buttons(props: any) {
-  const { position }: { position: any } = usePositionStore((state) => ({
-    ...state,
-  }));
-  const { updateMtmSl } = useSlStore((state) => ({ ...state }));
   // const { putLTP, callLTP } = useLtpStore((state) => ({ ...state }));
   const { call, put, base } = useSymbolStore((state) => ({ ...state }));
   const {
@@ -58,14 +53,16 @@ export default function Buttons(props: any) {
     setSelectedAccount: (data: any) => void;
   } = useAccountStore((state) => ({ ...state }));
   const { updatePosition } = usePositionStore((state) => ({ ...state }));
+  const {preferedSl, preferedTarget, updateSl, updateTarget}:{sl:any, target:any, mtmSl:any, mtmTarget:any, preferedSl:number|null, preferedTarget:number|null, updatePreferedSl:Function, updatePreferedTarget:Function, updateSl:Function, updateTarget:Function, updateMtmSl:Function, updateMtmTarget:Function, tslBase:any, updateTslBase:Function, mtmTslBase:any, updateMtmTslBase:Function}  = useSlStore((state) => ({...state}));
+
   const updatePositions = async () => {
-    const { type, id } = extractId(selected);
+    const { type} = extractId(selected);
 
     try {
       const resp = await axios.post(
         `${import.meta.env.VITE_server_url}/api/get-positions`,
         {
-          account_id: id,
+          account_id: selected,
           account_type: type,
         },
         {
@@ -128,10 +125,19 @@ export default function Buttons(props: any) {
       );
       if (res.status === 200) {
         console.log("done", res);
+        //update sl
+        //get ltpToken 
+        let ltpToken;
+        ltpToken = props.optionsData.NSE[base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}.0`][optionType].ltpToken
+        if(ltpToken){
+          updateSl({key: ltpToken, value: preferedSl})
+          updateTarget({key: ltpToken, value: preferedTarget})
+        }
+        
         updatePositions();
         //toast is not working
         toast.success(
-          `Order : Sell ${quantity} ${put.key} ${productType} ${orderType} `,
+          `Order : Sell ${quantity} ${optionType==="CE"?call.key:put.key} ${productType} ${orderType} `,
           {
             autoClose: 5000,
             hideProgressBar: false,
@@ -168,14 +174,14 @@ export default function Buttons(props: any) {
     }
     // console.log("object");
   };
-  const slToCostHandeler = () => {
-    let totalBuyPrice = 0;
-    position.map((p: any) => {
-      totalBuyPrice += p.buy_price;
-    });
-    console.log("totalBuyPrice", totalBuyPrice);
-    updateMtmSl(totalBuyPrice);
-  };
+  // const slToCostHandeler = () => {
+  //   let totalBuyPrice = 0;
+  //   position.map((p: any) => {
+  //     totalBuyPrice += p.buy_price;
+  //   });
+  //   console.log("totalBuyPrice", totalBuyPrice);
+  //   updateMtmSl(totalBuyPrice);
+  // };
 
   return (
     <div className="grid grid-cols-3 m-1">
@@ -211,7 +217,7 @@ export default function Buttons(props: any) {
                 {
                   withCredentials: true, // Ensure cookies are sent with the request
                 }
-              ).then((resp) => {
+              ).then(() => {
                 toast.success(
                   `Squared off All`,
                   {

@@ -16,7 +16,7 @@ import useUserStore from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
 
 // const SOCKET_SERVER_URL = "http://localhost:3000";
-const socket = io("http://localhost:4001");
+const socket = io("http://13.60.38.12:4001");
 const subsribeToken = (token: string)=>{
   socket.emit('subscribe', token);
 }  
@@ -31,7 +31,7 @@ function extractId(input: string): {
 
   let match = input.match(masterRegex);
   if (match) {
-    return { type: "MASTER", id: match[1] };
+    return { type: "MASTER", id: match[1]  };
   }
 
   match = input.match(childRegex);
@@ -46,7 +46,7 @@ export default function Trade() {
   const {email} = useUserStore((state)=>({...state}))
   const navigate = useNavigate()
 
-  const {master,updateMaster, updateChild, selected, setSelectedAccount, updateSelectedBroker}:{master: any,  selected:string , setSelectedAccount: Function, updateMaster: Function, updateChild: Function, updateSelectedBroker: Function} = useAccountStore((state) => ({...state}));
+  const {updateMaster, updateChild, selected, setSelectedAccount, updateSelectedBroker}:{master: any,  selected:string , setSelectedAccount: Function, updateMaster: Function, updateChild: Function, updateSelectedBroker: Function} = useAccountStore((state) => ({...state}));
   const {setOptionsData, optionsData} = useOptionStore((state) => ({...state}));
   const {updateBaseLTP, updateCallLTP, updatePutLTP}= useLtpStore((state) => ({...state}));
   const {base, call, put} = useSymbolStore((state) => ({...state}));
@@ -54,7 +54,7 @@ export default function Trade() {
   const [feed, setFeed] = useState<any>({});
   const {position, updatePosition}:{position:any[], updatePosition:Function} = usePositionStore((state) => ({...state}));
   const {updateMtm} = useMtmStore((state) => ({...state}));
-  const {preferedSl, preferedTarget, updatePreferedSl, updatePreferedTarget, mtmTslBase, updateMtmTslBase, tslBase, updateTslBase, sl, target, mtmSl, mtmTarget, updateSl, updateTarget, updateMtmSl, updateMtmTarget}:{sl:any, target:any, mtmSl:any, mtmTarget:any, preferedSl:number|null, preferedTarget:number|null, updatePreferedSl:Function, updatePreferedTarget:Function, updateSl:Function, updateTarget:Function, updateMtmSl:Function, updateMtmTarget:Function, tslBase:any, updateTslBase:Function, mtmTslBase:any, updateMtmTslBase:Function}  = useSlStore((state) => ({...state}));
+  const { updatePreferedSl, updatePreferedTarget, mtmTslBase, updateMtmTslBase, tslBase, updateTslBase, sl, target, mtmSl, mtmTarget, updateSl, updateTarget, updateMtmSl, updateMtmTarget}:{sl:any, target:any, mtmSl:any, mtmTarget:any, preferedSl:number|null, preferedTarget:number|null, updatePreferedSl:Function, updatePreferedTarget:Function, updateSl:Function, updateTarget:Function, updateMtmSl:Function, updateMtmTarget:Function, tslBase:any, updateTslBase:Function, mtmTslBase:any, updateMtmTslBase:Function}  = useSlStore((state) => ({...state}));
   // const {selected}:{master: any, child: any[], selected:string , setSelectedAccount: (data: any) => void} = useAccountStore((state) => ({...state}));
     // const {updatePosition}= usePositionStore((state) => ({...state}));
     const updatePositions=async () => {
@@ -290,6 +290,7 @@ export default function Trade() {
       <Inputs socket={socket}/>
       <LtpDisplay/>
       <Buttons
+        optionsData={optionsData}
         account_id={accountId}
       />
       <Info/>
