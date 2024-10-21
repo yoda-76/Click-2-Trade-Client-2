@@ -59,7 +59,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center ">
-      <div className="text-5xl font-bold text-white p-7">Oi DELTA</div>
+      <div className="text-5xl font-bold text-white p-7">CLIQ 2 TRADE</div>
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Login</CardTitle>
