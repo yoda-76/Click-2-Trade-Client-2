@@ -206,7 +206,7 @@ export default function Trade() {
         // if(!target[p.ltpToken] && preferedTarget){
         //   updateTarget({key: p.ltpToken, value: ltp+preferedTarget})
         // }
-        const pnl = Math.trunc(((p.sellPrice - p.buyPrice) + (p.netQty * ltp )) * 100) / 100;
+        const pnl = Math.trunc(((p.sellPrice - p.buyPrice) + (p.netQty * ltp * p.multiplier)) * 100) / 100;
 
         if(tslBase[p.ltpToken] && ltp>tslBase[p.ltpToken]){
           updateSl({key: p.ltpToken, value:sl[p.ltpToken]+(ltp-tslBase[p.ltpToken])})

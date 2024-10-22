@@ -197,7 +197,7 @@ export default function AddAccount(props:{refresh:React.Dispatch<React.SetStateA
             </div>
             <p>When you create an app on broker please enter "https://api.cliq2trade.com/api/(broker-name)/auth" as redirect url.</p>
                 <p>UPSTOX: "https://api.cliq2trade.com/api/upstox/auth"</p>
-                <p>DHAN: "https://api.cliq2trade.com/api/dhan/auth"</p>
+                {/* <p>DHAN: "https://api.cliq2trade.com/api/dhan/auth"</p> */}
           </CardContent>
           {/* {(formValues.broker==="DHAN" && formValues.type!=="" && formValues.u_id!=="")&& <DhanAuth />} */}
           <CardFooter className="flex justify-around">
