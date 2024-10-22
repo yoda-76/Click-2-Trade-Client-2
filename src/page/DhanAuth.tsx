@@ -105,7 +105,7 @@ export default function DhanAuth() {
         <div className="text-white m-5 p-5 text-xl w-full">
           Steps to complete dhan auth:
           <br />
-          1. Go to -dhan- login.
+          1. Go to <a href="https://web.dhan.co/">https://web.dhan.co/</a> login.
           <br />
           2. Go to <strong>DhanHQ Trading & Data APIs</strong> section.
           <br />
