@@ -176,7 +176,7 @@ function Inputs(props: any) {
           <Label>Prefered Target Pts: {preferedTarget}</Label>
           <Input type="number" value={preferedTargetState?preferedTargetState:0} onChange={(e) => {setPreferedTargetState(Number(e.target.value))}} onKeyDown={(e) => {if (e.key === "Enter") {
             console.log("preferedTarget",master);
-            axios.post(`${import.meta.env.VITE_server_url}/api/update-prefrences-target`, {target: preferedTargetState },{withCredentials: true,})
+            axios.post(`${import.meta.env.VITE_server_url}/api/update-prefrences`, {target: preferedTargetState },{withCredentials: true,})
             updatePreferedTarget(preferedTargetState)
             }}} placeholder="Prefered Target Pts" />
         </div>

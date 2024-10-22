@@ -8,6 +8,7 @@ import useSymbolStore from "@/store/symbolStore";
 import useAccountStore from "@/store/accountStore";
 import usePositionStore from "@/store/positionStore";
 import useSlStore from "@/store/slStore";
+import useLtpStore from "@/store/ltpStore";
 
 function extractId(input: string): {
   type: "MASTER" | "CHILD" | null;
@@ -54,6 +55,7 @@ export default function Buttons(props: any) {
   } = useAccountStore((state) => ({ ...state }));
   const { updatePosition } = usePositionStore((state) => ({ ...state }));
   const {preferedSl, preferedTarget, updateSl, updateTarget}:{sl:any, target:any, mtmSl:any, mtmTarget:any, preferedSl:number|null, preferedTarget:number|null, updatePreferedSl:Function, updatePreferedTarget:Function, updateSl:Function, updateTarget:Function, updateMtmSl:Function, updateMtmTarget:Function, tslBase:any, updateTslBase:Function, mtmTslBase:any, updateMtmTslBase:Function}  = useSlStore((state) => ({...state}));
+  const {callLTP, putLTP} = useLtpStore((state) => ({...state}))
 
   const updatePositions = async () => {
     const { type} = extractId(selected);
@@ -129,9 +131,9 @@ export default function Buttons(props: any) {
         //get ltpToken 
         let ltpToken;
         ltpToken = props.optionsData.NSE[base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}.0`][optionType].ltpToken
-        if(ltpToken){
-          updateSl({key: ltpToken, value: preferedSl})
-          updateTarget({key: ltpToken, value: preferedTarget})
+        if(ltpToken && preferedSl && preferedTarget){
+          updateSl({key: ltpToken, value: optionType === "CE" ? callLTP-preferedSl : putLTP-preferedSl})
+          updateTarget({key: ltpToken, value: optionType === "CE" ? callLTP+preferedTarget : putLTP+preferedTarget})
         }
         
         updatePositions();

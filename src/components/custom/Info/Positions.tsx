@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 export default function Positions() {
   const { position } = usePositionStore((state) => ({ ...state }));
-  const { updateTslBase,updateSl, updateTarget, increaseSl, decreaseSl, increaseTarget, decreaseTarget } = useSlStore((state) => ({
+  const {tslBase, updateTslBase,updateSl, updateTarget, increaseSl, decreaseSl, increaseTarget, decreaseTarget }:{tslBase:any, updateTslBase:Function, updateSl:Function, updateTarget:Function, increaseSl:Function, decreaseSl:Function, increaseTarget:Function, decreaseTarget:Function} = useSlStore((state) => ({
     ...state,
   }));
   const { selected}:{master: any, selected:string} = useAccountStore((state) => ({...state}));
@@ -86,15 +86,18 @@ export default function Positions() {
                 }
               }}
             />
-            <div>{v.netQty!=0?(v.tsl ? <Button onClick={()=>{
-              updateTslBase({key: v.instrument_token, value: null})
+            <div>{v.netQty!=0?(tslBase[v.ltpToken] ? <Button onClick={()=>{
+              updateTslBase({key: v.ltpToken, value: null})
             }}>turn off</Button> : <Button onClick={()=>{
-              updateTslBase({key: v.instrument_token, value: v.last_price})
+              console.log( v.ltp)
+              updateTslBase({key: v.ltpToken, value: v.ltp})
               console.log("tsl set");
             }}>turn on</Button>):"---"}</div>
+
             <div>{v.netQty!=0?<Button onClick={()=>{
               slToCostHandeler(v.ltpToken,v.buyPrice)
             }}>Sl 2 Cost</Button>:"---"}</div>
+            
             <div>{v.buyPrice ? v.buyPrice : "---"}</div>
 
             {v.netQty!=0?<Button onClick={() => {
