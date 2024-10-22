@@ -103,19 +103,15 @@ export default function DhanAuth() {
           </a>
         </Card>
         <div className="text-white m-5 p-5 text-xl w-full">
-          Notes & Disclaimer:
+          Steps to complete dhan auth:
           <br />
-          1. Stoploss and Trailing Stoploss feature will only work if OiDelta
-          trading window is opened.
+          1. Go to -dhan- login.
           <br />
-          2. Stoploss and Trailing Stoploss will be removed if OiDelta window has
-          been reloaded.
+          2. Go to <strong>DhanHQ Trading & Data APIs</strong> section.
           <br />
-          3. We are not responsible for any of Losses you may incur by using
-          OiDelta.
+          3. Create a new access token with 30 days expiry.
           <br />
-          4. We are not SEBI registered investment/financial advisers. Please
-          consult your investment/financial adviser before trading/investing.
+          4. Enter the access token and your dhan client id in the form.
         </div>
       </div>
     );
