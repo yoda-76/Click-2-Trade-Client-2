@@ -13,6 +13,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "@/store/userStore";
+import Tutorial from "./Tutorial";
 interface FormValues {
   email: string;
   password: string;
@@ -97,6 +98,7 @@ const Login: React.FC = () => {
           Don't have an account?
         </a>
       </Card>
+      <Tutorial />
       <div className="text-white m-5 p-5 text-xl w-full">
         Notes & Disclaimer:
         <br />
