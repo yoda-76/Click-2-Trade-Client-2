@@ -2,18 +2,13 @@
 import CoustomSelect from '@/components/custom/CoustomSelect';
 import { Button } from '@/components/ui/button';
 import { extractExpiryAndStrike } from '@/lib/extractExpiryAndStrike';
-import { fetchOptionChain } from '@/lib/fetchOptionChain';
 import useOptionChainStore from '@/store/optionChainStore';
 import useOptionsDataStore from '@/store/optionsDataStore';
 import useStaticStore from '@/store/staticStore';
-import useSymbolStore from '@/store/symbolStore';
 import useUserStore from '@/store/userStore';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-
-const access_token = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJLTDI3NzAiLCJqdGkiOiI2NzFjZWM3OWU4YWFmNDBmYzg1ODA1N2MiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaWF0IjoxNzI5OTQ4NzkzLCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3Mjk5ODAwMDB9.UBE1A_ExZcVXSJVpeKUaw2dZhQ6chpHy8SQa5CSlKfk"
-
 
 function OptionChain() {
     const navigate = useNavigate();
@@ -39,7 +34,7 @@ function OptionChain() {
 
   const { OptionChain, setOptionChain} = useOptionChainStore((state) => ({ ...state }));
   const {expiries ,updateExpiries} = useStaticStore((state) => ({updateExpiries:state.updateExpiries, expiries:state.expiries, updateStrikes:state.updateStrikes, strikes:state.strikes}));
-  const { updateBase }=useSymbolStore((state) => ({base:state.base, updateCall:state.updateCall, updatePut:state.updatePut, updateBase:state.updateBase}));
+  
 
   useEffect(() => {
     console.log(accounts)
