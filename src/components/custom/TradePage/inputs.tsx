@@ -11,21 +11,7 @@ import { Combobox } from "../CoustomComboBox";
 import useSlStore from "@/store/slStore";
 import axios from "axios";
 import useAccountStore from "@/store/accountStore";
-
-const extractExpiryAndStrike = (
-  input: string
-): { expiryDate: string; strikePrice: number } => {
-  const regex = /(\d{4}-\d{2}-\d{2})\s*:\s*([\d.]+)/;
-  const match = input.match(regex);
-
-  if (match) {
-    const expiryDate = match[1];
-    const strikePrice = parseFloat(match[2]);
-    return { expiryDate, strikePrice };
-  } else {
-    throw new Error("Invalid input format");
-  }
-};
+import { extractExpiryAndStrike } from "@/lib/extractExpiryAndStrike";
 
 function Inputs(props: any) {
   const subsribeToken = (token: string)=>{

@@ -13,6 +13,7 @@ import { CookiesProvider } from 'react-cookie'
 import Test from "./page/Test.tsx";
 import DhanAuth from "./page/DhanAuth.tsx";
 import Profile from "./page/Profile.tsx";
+import OptionChain from "./page/OptionChain.tsx";
 // import dotenv from 'dotenv'
 // dotenv.config()
 const router = createBrowserRouter([
@@ -87,7 +88,16 @@ const router = createBrowserRouter([
         <Test />
       </Provider>
     ),
-  }
+  },
+  
+  {
+    path: "/option-chain",
+    element: (
+      <Provider store={store}>
+        <OptionChain />
+      </Provider>
+    ),
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

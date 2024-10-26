@@ -104,6 +104,10 @@ const Dashboard: React.FC = () => {
           >
             Add Account
           </Button>
+          <Button
+            onClick={() => {
+              navigate("/option-chain");
+          }}>Option Chain</Button>
           <div className="flex gap-3">
           <Button
             onClick={async () => {
