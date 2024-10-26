@@ -57,7 +57,7 @@ function OptionChain() {
   }, []);
   const getOptionChain = async (expiry: string, base: string, accountId: string) => {
     console.log(expiry, base)
-    axios.post("http://localhost:3000/api/get-option-chain",{
+    axios.post(`${import.meta.env.VITE_server_url}/api/get-option-chain`,{
         accountId,base,expiry
       }).then((resp) => {
         setOptionChain(resp.data);
