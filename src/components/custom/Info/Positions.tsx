@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { updatePositions } from "@/lib/updatePositions";
 import useAccountStore from "@/store/accountStore";
 import usePositionStore from "@/store/positionStore";
 import useSlStore from "@/store/slStore";
@@ -108,6 +109,7 @@ export default function Positions() {
               }, {
                 withCredentials: true, // Ensure cookies are sent with the request
               }).then(() => {
+                updatePositions(selected);
                 toast.success(
                   `Squared off : ${v.symbolName}`,
                   {
