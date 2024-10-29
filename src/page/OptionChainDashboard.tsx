@@ -88,8 +88,8 @@ function OptionChainDashboard() {
         {/* Put Options Headers */}
         <div className="grid grid-cols-3 text-center gap-2 flex-1">
           <div>Time</div>
-          <div>CE_Vega_Change</div>
-          <div>PE_Vega_Change</div>
+          <div>CE</div>
+          <div>PE</div>
         </div>
 
       </div>
