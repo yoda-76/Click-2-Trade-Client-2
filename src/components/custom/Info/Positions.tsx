@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { updatePositions } from "@/lib/updatePositions";
 import useAccountStore from "@/store/accountStore";
 import usePositionStore from "@/store/positionStore";
 import useSlStore from "@/store/slStore";
@@ -17,6 +16,29 @@ export default function Positions() {
   
   const [slValue, setSlValue] = useState<any>();
   const [targetValue, setTargetValue] = useState<any>();
+  const { updatePosition } = usePositionStore((state) => ({ ...state }));
+
+  const updatePositions = async () => {
+    // const { type} = extractI(selected);
+
+    try {
+      const resp = await axios.post(
+        `${import.meta.env.VITE_server_url}/api/get-positions`,
+        {
+          account_id: selected,
+        },
+        {
+          withCredentials: true, // Ensure cookies are sent with the request
+        }
+      );
+      console.log("orders fetched", resp.data);
+      updatePosition(resp.data);
+      return
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const slToCostHandeler = (key:string, value:number)=>{
     updateSl({ key ,value });
   }
@@ -109,7 +131,8 @@ export default function Positions() {
               }, {
                 withCredentials: true, // Ensure cookies are sent with the request
               }).then(() => {
-                updatePositions(selected);
+                console.log("squared off 1 position");
+                updatePositions();
                 toast.success(
                   `Squared off : ${v.symbolName}`,
                   {

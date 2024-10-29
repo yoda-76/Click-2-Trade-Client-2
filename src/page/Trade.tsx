@@ -14,6 +14,8 @@ import useMtmStore from "@/store/mtmStore";
 import useSlStore from "@/store/slStore";
 import useUserStore from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+
 
 // const SOCKET_SERVER_URL = "http://localhost:3000";
 const socket = io(import.meta.env.VITE_socket_url);
@@ -224,6 +226,18 @@ export default function Trade() {
             withCredentials: true, // Ensure cookies are sent with the request
           }).then(()=>{
             updatePositions()
+            toast.success(
+              `Squared off : ${p.symbolName}`,
+              {
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                position: "top-right",
+              }
+            );
           })
           updateSl({key: p.ltpToken, value: null})
         }
@@ -237,6 +251,18 @@ export default function Trade() {
             withCredentials: true, // Ensure cookies are sent with the request
           }).then(()=>{
             updatePositions()
+            toast.success(
+              `Squared off : ${p.symbolName}`,
+              {
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                position: "top-right",
+              }
+            );
           })
           updateTarget({key: p.ltpToken, value: null})
         }
@@ -266,6 +292,18 @@ export default function Trade() {
         withCredentials: true, // Ensure cookies are sent with the request
       }).then(()=>{
         updatePositions()
+        toast.success(
+          `Squared off all positions`,
+          {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            position: "top-right",
+          }
+        );
       })
       updateMtmSl(null)
     }
@@ -278,6 +316,18 @@ export default function Trade() {
       }).then(()=>{
         // updateMtmSl(0)
         updatePositions()
+        toast.success(
+          `Squared off all positions`,
+          {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            position: "top-right",
+          }
+        );
         
       })
       updateMtmTarget(null)
@@ -287,6 +337,8 @@ export default function Trade() {
 
   return (
     <div className="">
+        <ToastContainer />
+
       <Inputs socket={socket}/>
       <LtpDisplay/>
       <Buttons
