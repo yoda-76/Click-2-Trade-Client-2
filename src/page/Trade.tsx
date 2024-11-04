@@ -122,14 +122,15 @@ export default function Trade() {
           updatePreferedTarget(resp.data.data.target)
         })
         
-        axios.post(`${import.meta.env.VITE_server_url}/api/get-orders`, {
-          account_id: `MASTER:${id}`,
-          // account_type: type,
-        }, {
-          withCredentials: true, // Ensure cookies are sent with the request
-        }).then(res=>{
-          // console.log(res);
-        })
+        // update order book
+        // axios.post(`${import.meta.env.VITE_server_url}/api/get-orders`, {
+        //   account_id: `MASTER:${id}`,
+        //   // account_type: type,
+        // }, {
+        //   withCredentials: true, // Ensure cookies are sent with the request
+        // }).then(res=>{
+        //   console.log(res);
+        // })
 
       // some await functions
       if (id) {
