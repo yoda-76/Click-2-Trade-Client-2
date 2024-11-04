@@ -68,7 +68,7 @@ export default function Positions() {
             <div className="break-words">
               {v.symbolName ? v.symbolName : "---"}
             </div>
-            <div>{v.netQty ? v.netQty : "Qty"}</div>
+            <div>{v.netQty ? v.netQty : "-0-"}</div>
             <div>{v.pnl}</div>
             <div>{v.ltp ? v.ltp : "LTP"}</div>
             <div className="grid grid-cols-3">
