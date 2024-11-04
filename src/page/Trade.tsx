@@ -69,12 +69,12 @@ export default function Trade() {
         }, {
           withCredentials: true, // Ensure cookies are sent with the request
         });
-        console.log("positions fetched", resp);
+        // console.log("positions fetched", resp);
         updatePosition(resp.data);
         //subscribe to the positions
         resp.data.map((p: any) => {
           subsribeToken(p.ltpToken)
-          console.log("subscribing to token", p.ltpToken);
+          // console.log("subscribing to token", p.ltpToken);
         })
       } catch (e) {
         console.log(e);
@@ -110,14 +110,14 @@ export default function Trade() {
           updateMaster(resp.data.accounts);
           resp.data.accounts.map((account: any) => {
             if (account.u_id === id) {
-              console.log(account);
+              // console.log(account);
               updateSelectedBroker(account.broker);
             }
           })
         });
         
         axios.post(`${import.meta.env.VITE_server_url}/api/get-prefrences`, { account_id: id },{withCredentials: true,}).then((resp) => {
-          console.log("prefrences: ",resp.data);
+          // console.log("prefrences: ",resp.data);
           updatePreferedSl(resp.data.data.stoploss)
           updatePreferedTarget(resp.data.data.target)
         })
@@ -128,7 +128,7 @@ export default function Trade() {
         }, {
           withCredentials: true, // Ensure cookies are sent with the request
         }).then(res=>{
-          console.log(res);
+          // console.log(res);
         })
 
       // some await functions
@@ -209,7 +209,7 @@ export default function Trade() {
         //   updateTarget({key: p.ltpToken, value: ltp+preferedTarget})
         // }
         const pnl = Math.trunc(((p.sellValue - p.buyValue) + ((p.netQty) * ltp * (p.multiplier?p.multiplier:1))) * 100) / 100;
-        console.log(tslBase[p.ltpToken])
+        // console.log(tslBase[p.ltpToken])
         if(tslBase[p.ltpToken] && ltp>tslBase[p.ltpToken]){
           updateSl({key: p.ltpToken, value:sl[p.ltpToken]+(ltp-tslBase[p.ltpToken])})
           updateTslBase({key: p.ltpToken, value:ltp})
@@ -218,7 +218,7 @@ export default function Trade() {
 
 
         if(sl[p.ltpToken] >=ltp && sl[p.ltpToken] !==null){
-          console.log("squared of, sl hit");
+          // console.log("squared of, sl hit");
           axios.post(`${import.meta.env.VITE_server_url}/api/square-off-single`, {
             account_id: selected,
             position: p,
@@ -243,7 +243,7 @@ export default function Trade() {
         }
         
         if(target[p.ltpToken] <=ltp && target[p.ltpToken] !==null){
-          console.log("squared of, target hit");
+          // console.log("squared of, target hit");
           axios.post(`${import.meta.env.VITE_server_url}/api/square-off-single`, {
             account_id: selected,
             position: p,
@@ -285,7 +285,7 @@ export default function Trade() {
     //mtm tsl
     //check mtm sl and target
     if(mtmSl !== null && mtmSl >= mtm){
-      console.log("MTM SL HIT");
+      // console.log("MTM SL HIT");
       axios.post(`${import.meta.env.VITE_server_url}/api/square-off-all`,  {
         account_id: selected
       }, {
@@ -308,7 +308,7 @@ export default function Trade() {
       updateMtmSl(null)
     }
     if(mtmTarget !== null && mtmTarget <= mtm){
-      console.log("MTM TARGET HIT");
+      // console.log("MTM TARGET HIT");
       axios.post(`${import.meta.env.VITE_server_url}/api/square-off-all`,  {
         account_id: selected
       }, {
