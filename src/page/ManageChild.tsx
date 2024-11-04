@@ -66,7 +66,7 @@ export default function ManageChild() {
         }
       )
       .then((resp) => {
-        console.log(resp.data.childAccounts);
+        // console.log(resp.data.childAccounts);
         setChildAccounts(resp.data.childAccounts);
       })
       .catch((error) => console.log(error));

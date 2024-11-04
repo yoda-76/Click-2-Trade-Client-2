@@ -57,7 +57,7 @@ const Dashboard: React.FC = () => {
         }
       )
       .then((resp) => {
-        console.log(resp.data);
+        // console.log(resp.data);
         updateAccounts(resp.data.accounts);
       });
   }, [email, refreshState]);
@@ -86,8 +86,8 @@ const Dashboard: React.FC = () => {
           withCredentials: true, // Ensure cookies are sent with the request
         }
       )
-      .then((resp) => {
-        console.log(resp.data);
+      .then(() => {
+        // console.log(resp.data);
         setRefreshState(!refreshState);
       });
   };
