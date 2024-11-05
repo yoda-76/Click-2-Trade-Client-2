@@ -63,7 +63,7 @@ export default function DhanAuth() {
       console.log(response);
       navigate("/dashboard");
     };
-  
+
     return (
       <div className="flex flex-col items-center justify-center pt-14">
         <Card className="w-[350px]">

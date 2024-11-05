@@ -92,6 +92,36 @@ const Dashboard: React.FC = () => {
       });
   };
 
+  const getBrokerElement = (a: any) => {
+    const brokerConfig : any = {
+      DHAN: (
+        <Button onClick={() => navigate(`/dhan-auth?id=MASTER:${a.u_id}`)}>
+          DHAN AUTH
+        </Button>
+      ),
+      UPSTOCKS: (
+        <a
+          className="p-2 h-fit rounded-md text-white font-medium bg-cyan-600"
+          target="_blank"
+          href={`https://api.upstox.com/v2/login/authorization/dialog?response_type=code&client_id=${
+            a.key
+          }&redirect_uri=${import.meta.env.VITE_server_url}/api/upstox/auth&state=MASTER:${a.u_id}`}
+        >
+          Generate Token
+        </a>
+      ),
+      ANGEL: (
+        <Button onClick={() => navigate(`/angel-auth?id=MASTER:${a.u_id}`)}>
+          ANGEL AUTH
+        </Button>
+      ),
+      // Add more brokers here as needed
+    };
+  
+    return brokerConfig[a.broker] || (
+      <p className="text-red-600">Unsupported Broker</p>
+    );
+  };
   return (
     <div className="flex-col flex items-center w-[100%]">
       <div className="flex flex-col items-start bg-amber-100 p-2 w-[100%]">
@@ -161,6 +191,10 @@ const Dashboard: React.FC = () => {
                     {JSON.stringify(a.u_id)}
                   </span>
                   <span>
+                    <strong>Broker: </strong>
+                    {JSON.stringify(a.broker)}
+                  </span>
+                  <span>
                     <strong>Name Tag: </strong>
                     {JSON.stringify(a.name_tag)}
                   </span>
@@ -174,21 +208,7 @@ const Dashboard: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex gap-3">
-                  {a.broker === "DHAN" ? <Button onClick={() => {
-                    navigate(`/dhan-auth?id=MASTER:${a.u_id}`);
-                  }}>DHAN AUTH</Button>:
-                  <a
-                    className="p-2  h-fit rounded-md text-white font-medium font bg-cyan-600 "
-                    target="blank"
-                    href={`https://api.upstox.com/v2/login/authorization/dialog?response_type=code&client_id=${
-                      a.key
-                    }&redirect_uri=${
-                      import.meta.env.VITE_server_url
-                    }/api/upstox/auth&state=MASTER:${a.u_id}`}
-                  >
-                    Generate Token
-                  </a>
-                  }
+                {getBrokerElement(a)}
 
                   <Button
                     onClick={() => {

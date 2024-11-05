@@ -143,8 +143,8 @@ export default function AddAccount(props:{refresh:React.Dispatch<React.SetStateA
                   <SelectContent position="popper">
                     <SelectItem value="UPSTOCKS">Upstocks</SelectItem>
                     <SelectItem value="DHAN">Dhan</SelectItem>
-                    {/* <SelectItem value="ANGEL">Angel</SelectItem>
-                    <SelectItem value="ESPRESSO">Espresso</SelectItem> */}
+                     <SelectItem value="ANGEL">Angel</SelectItem>
+                    {/*<SelectItem value="ESPRESSO">Espresso</SelectItem> */}
                   </SelectContent>
                 </Select>
               </div>

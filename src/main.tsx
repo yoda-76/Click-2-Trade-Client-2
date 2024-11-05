@@ -15,6 +15,7 @@ import DhanAuth from "./page/DhanAuth.tsx";
 import Profile from "./page/Profile.tsx";
 import OptionChain from "./page/OptionChain.tsx";
 import OptionChainDashboard from "./page/OptionChainDashboard.tsx";
+import AngelAuth from "./page/AngelAuth.tsx";
 // import dotenv from 'dotenv'
 // dotenv.config()
 const router = createBrowserRouter([
@@ -79,6 +80,14 @@ const router = createBrowserRouter([
     element: (
       <Provider store={store}>
         <DhanAuth />
+      </Provider>
+    ),
+  },
+  {
+    path: "/angel-auth",
+    element: (
+      <Provider store={store}>
+        <AngelAuth />
       </Provider>
     ),
   },
