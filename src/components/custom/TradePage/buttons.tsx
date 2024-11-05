@@ -43,6 +43,7 @@ export default function Buttons(props: any) {
     expiry,
     callStrike,
     putStrike,
+    exchange
   } = useOrderParameterStore((state) => ({ ...state }));
 
   const {
@@ -89,7 +90,7 @@ export default function Buttons(props: any) {
           expiry: expiry,
           strike: optionType === "CE" ? callStrike : putStrike,
           optionType: optionType,
-          exchange: "NSE",
+          exchange,
           qty: quantity,
           price:
             orderType === "LIMIT"
@@ -109,7 +110,7 @@ export default function Buttons(props: any) {
         //update sl
         //get ltpToken 
         let ltpToken;
-        ltpToken = props.optionsData.NSE[base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}.0`][optionType].ltpToken
+        ltpToken = props.optionsData[exchange][base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}.0`][optionType].ltpToken
         if(ltpToken && preferedSl && preferedTarget){
           updateSl({key: ltpToken, value: optionType === "CE" ? callLTP-preferedSl : putLTP-preferedSl})
           updateTarget({key: ltpToken, value: optionType === "CE" ? callLTP+preferedTarget : putLTP+preferedTarget})

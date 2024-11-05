@@ -17,7 +17,7 @@ function Inputs(props: any) {
   const subsribeToken = (token: string)=>{
     props.socket.emit('subscribe', token);
   }
-  const {expiry, orderType, callStrike, updateExpiry, updateCallStrike, updatePutStrike, updateQuantity, updateOrderType, updateProductType, updateTriggerPrice}=useOrderParameterStore((state) => ({...state}));
+  const {expiry, orderType, callStrike, exchange, updateExpiry, updateCallStrike, updatePutStrike, updateQuantity, updateOrderType, updateProductType, updateTriggerPrice, updateExchange}=useOrderParameterStore((state) => ({...state}));
   
   const {base, updateBase, updateCall, updatePut }=useSymbolStore((state) => ({base:state.base, updateCall:state.updateCall, updatePut:state.updatePut, updateBase:state.updateBase}));
   
@@ -61,11 +61,11 @@ function Inputs(props: any) {
   return (
     <>
       <div className="flex justify-center gap-5  text-white  pr-4">
-        {/* <CoustomSelect
-          options={["NSE_FO"]}
+         <CoustomSelect
+          options={["NSE", "BSE", "MCX"]}
           label="select exchange"
-          setChange={(v: any) => { console.log(v); }}
-        /> */}
+          setChange={(v: any) => { updateExchange(v) }}
+        /> 
 
 
         {/* <CoustomSelect
@@ -175,8 +175,8 @@ function Inputs(props: any) {
           setChange={(v: number) => {
             console.log(v, callStrike);
             updateCallStrike(v);
-            Object.keys(optionsData.NSE[base.symbol]).map((op) => {
-              const option = optionsData.NSE[base.symbol][op];
+            Object.keys(optionsData[exchange][base.symbol]).map((op) => {
+              const option = optionsData[exchange][base.symbol][op];
               // console.log(option);
               const result = extractExpiryAndStrike(op);
               if (result.expiryDate === expiry && result.strikePrice === v) {
@@ -201,12 +201,12 @@ function Inputs(props: any) {
         <div className="flex  gap-1 items-center">
         <CoustomSelect
           placeholder="Select Index"
-          options={["NIFTY", "BANKNIFTY", "FINNIFTY"]}
+          options={exchange==="NSE"?["NIFTY", "BANKNIFTY", "FINNIFTY"]:exchange==="BSE"?["BANKEX", "SENSEX"]:["CRUDEOIL"]}
           label=""
           setChange={(v: any) => {
             var newBase={symbol:"", key:""}
             
-            if (v === "NIFTY" || v === "BANKNIFTY" || v === "FINNIFTY") {
+            if (v === "NIFTY" || v === "BANKNIFTY" || v === "FINNIFTY" || v === "CRUDEOIL" || v === "BANKEX" || v === "SENSEX") {
               // let newBase;
               
               if (v === "NIFTY") {
@@ -215,22 +215,30 @@ function Inputs(props: any) {
               } else if (v === "BANKNIFTY") {
                 newBase = { symbol: "BANKNIFTY", key: optionsData?.NSE.INDEX.BANKNIFTY.ltpToken };
                 setQuantityList(getQuantityArray(15,300));
-              } else {
+              } else if (v === "FINNIFTY") {
                 newBase = { symbol: "FINNIFTY", key: optionsData?.NSE.INDEX.FINNIFTY.ltpToken };
                 setQuantityList(getQuantityArray(25,300));
+              } else if (v === "CRUDEOIL") {
+                newBase = { symbol: "CRUDEOIL", key: optionsData?.MCX.INDEX.CRUDEOIL.ltpToken };
+                setQuantityList(getQuantityArray(100,3000));
+              } else if (v === "BANKEX") {
+                newBase = { symbol: "BANKEX", key: optionsData?.BSE.INDEX.BANKEX.ltpToken };
+                setQuantityList(getQuantityArray(15,300));
+              } else if (v === "SENSEX") {
+                newBase = { symbol: "SENSEX", key: optionsData?.BSE.INDEX.SENSEX.ltpToken };
+                setQuantityList(getQuantityArray(10,300));
               }
-              
               // console.log(newBase, "selected");
               updateBase(newBase);
               subsribeToken(newBase.key);
             }else{
-              newBase={ symbol: v, key: optionsData.NSE.EQUITY[v].instrument_key }
+              newBase={ symbol: v, key: optionsData[exchange].EQUITY[v].instrument_key }
               updateBase(newBase);
             } 
             
             let tempExpiryDates: string[] = [];
             // console.log("optionsData",optionsData);
-            Object.keys(optionsData.NSE[newBase.symbol]).map((op) => {
+            Object.keys(optionsData[exchange][newBase.symbol]).map((op) => {
             const result = extractExpiryAndStrike(op);
             if (!tempExpiryDates.includes(result.expiryDate))
                 tempExpiryDates.push(result.expiryDate);
@@ -251,7 +259,7 @@ function Inputs(props: any) {
           setChange={(v: any) => {
             let tempStrikePrices: number[] = [];
             // console.log(base);
-            Object.keys(optionsData.NSE[base.symbol]).map((op) => {
+            Object.keys(optionsData[exchange][base.symbol]).map((op) => {
               const result = extractExpiryAndStrike(op);
               // tempExpiryDates.push(result.expiryDate);
               // console.log(result.expiryDate === expiry ,!tempStrikePrices.includes(result.strikePrice));
@@ -286,8 +294,8 @@ function Inputs(props: any) {
           setChange={(v: any) => {
             // props.setPutStrike(v);
             updatePutStrike(v);
-            Object.keys(optionsData.NSE[base.symbol]).map((op) => {
-              const option = optionsData.NSE[base.symbol][op];
+            Object.keys(optionsData[exchange][base.symbol]).map((op) => {
+              const option = optionsData[exchange][base.symbol][op];
               const result = extractExpiryAndStrike(op);
               if (result.expiryDate === expiry && result.strikePrice === v) {
                 // console.log({
