@@ -14,7 +14,7 @@ import Test from "./page/Test.tsx";
 import DhanAuth from "./page/DhanAuth.tsx";
 import Profile from "./page/Profile.tsx";
 import OptionChain from "./page/OptionChain.tsx";
-import OptionChainDashboard from "./page/OptionChainDashboard.tsx";
+// import OptionChainDashboard from "./page/OptionChainDashboard.tsx";
 import AngelAuth from "./page/AngelAuth.tsx";
 // import dotenv from 'dotenv'
 // dotenv.config()
@@ -99,14 +99,14 @@ const router = createBrowserRouter([
       </Provider>
     ),
   },
-  {
-    path: "/opt-chn-dashboard",
-    element: (
-      <Provider store={store}>
-        <OptionChainDashboard />
-      </Provider>
-    ),
-  },
+  // {
+  //   path: "/opt-chn-dashboard",
+  //   element: (
+  //     <Provider store={store}>
+  //       <OptionChainDashboard />
+  //     </Provider>
+  //   ),
+  // },
   {
     path: "/option-chain",
     element: (

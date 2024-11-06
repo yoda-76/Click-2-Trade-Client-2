@@ -98,6 +98,7 @@ function OptionChain() {
       </div>
       <div className="flex justify-start w-[100%] gap-3 py-4">
       <CoustomSelect
+          default={base}
           placeholder="Select Index"
           options={["NIFTY", "BANKNIFTY", "FINNIFTY"]}
           label="Base Instrument"
@@ -137,6 +138,7 @@ function OptionChain() {
           }}
         />
         <CoustomSelect
+          default={expiry}
           placeholder="Order Type"
           options={[...expiries]}
           label="Expiry"
@@ -146,6 +148,7 @@ function OptionChain() {
         />
 
         <CoustomSelect
+          default={accountId}
           placeholder="select account"
           options={[...uidList]}
           label="Account (upstox)"

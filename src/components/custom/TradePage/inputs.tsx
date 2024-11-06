@@ -17,7 +17,7 @@ function Inputs(props: any) {
   const subsribeToken = (token: string)=>{
     props.socket.emit('subscribe', token);
   }
-  const {expiry, orderType, callStrike, exchange, putStrike, quantity, productType, triggerPrice,  updateExpiry, updateCallStrike, updatePutStrike, updateQuantity, updateOrderType, updateProductType, updateTriggerPrice, updateExchange}=useOrderParameterStore((state) => ({...state}));
+  const {expiry, orderType, callStrike, exchange, putStrike, productType,  updateExpiry, updateCallStrike, updatePutStrike, updateQuantity, updateOrderType, updateProductType, updateTriggerPrice, updateExchange}=useOrderParameterStore((state) => ({...state}));
   
   const {base, updateBase, updateCall, updatePut }=useSymbolStore((state) => ({base:state.base, updateCall:state.updateCall, updatePut:state.updatePut, updateBase:state.updateBase}));
   
