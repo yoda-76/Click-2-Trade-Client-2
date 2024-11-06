@@ -2,12 +2,13 @@
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
-export default function CoustomSelect(props:{options:string[], setChange:any, label:string, placeholder?:string}) {
+export default function CoustomSelect(props:{options:string[],default:any, setChange:any, label:string, placeholder?:string}) {
   // console.log("custom select rensering");
   return (
     <div className="flex flex-col space-y-1.5">
                 <Label>{props.label}</Label>
                 <Select
+                  value={props.default}
                   onValueChange={(value) => {
                     props.setChange(value);
                   }}

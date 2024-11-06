@@ -17,7 +17,7 @@ function Inputs(props: any) {
   const subsribeToken = (token: string)=>{
     props.socket.emit('subscribe', token);
   }
-  const {expiry, orderType, callStrike, exchange, updateExpiry, updateCallStrike, updatePutStrike, updateQuantity, updateOrderType, updateProductType, updateTriggerPrice, updateExchange}=useOrderParameterStore((state) => ({...state}));
+  const {expiry, orderType, callStrike, exchange, putStrike, quantity, productType, triggerPrice,  updateExpiry, updateCallStrike, updatePutStrike, updateQuantity, updateOrderType, updateProductType, updateTriggerPrice, updateExchange}=useOrderParameterStore((state) => ({...state}));
   
   const {base, updateBase, updateCall, updatePut }=useSymbolStore((state) => ({base:state.base, updateCall:state.updateCall, updatePut:state.updatePut, updateBase:state.updateBase}));
   
@@ -25,7 +25,7 @@ function Inputs(props: any) {
   
   const {expiries, strikes ,updateExpiries, updateStrikes} = useStaticStore((state) => ({updateExpiries:state.updateExpiries, expiries:state.expiries, updateStrikes:state.updateStrikes, strikes:state.strikes}));
 
-  const [updateCallLTP, updatePutLTP] = useLtpStore((state) => [state.updateCallLTP, state.updatePutLTP]);
+  const {baseLTP, updateCallLTP, updatePutLTP} = useLtpStore((state) => ({...state}));
   const {master}:{master:any} = useAccountStore((state) => ({master: state.master}));
   interface Quantity {
     value: string;
@@ -62,6 +62,7 @@ function Inputs(props: any) {
     <>
       <div className="flex justify-center gap-5  text-white  pr-4">
          <CoustomSelect
+          default={exchange}
           options={["NSE", "BSE", "MCX"]}
           label="select exchange"
           setChange={(v: any) => { updateExchange(v) }}
@@ -108,6 +109,7 @@ function Inputs(props: any) {
         
           <div className="flex flex-col">
         <CoustomSelect
+          default={productType}
           placeholder="Product Type"
           options={["Intraday", "Margin"]}
           label=""
@@ -122,6 +124,7 @@ function Inputs(props: any) {
         </div>
         <div className="flex flex-col">
         <CoustomSelect
+          default={orderType}
           placeholder="Order Type"
           options={["MARKET", "LIMIT"]}
           label=""
@@ -169,6 +172,7 @@ function Inputs(props: any) {
       </div>
       <div className="flex  text-white justify-between items-center gap-1">
       <CoustomSelect
+          default={callStrike}
           placeholder="Call Strike"
           options={strikes}
           label="Call Strike"
@@ -200,6 +204,7 @@ function Inputs(props: any) {
 
         <div className="flex  gap-1 items-center">
         <CoustomSelect
+        default={base.symbol}
           placeholder="Select Index"
           options={exchange==="NSE"?["NIFTY", "BANKNIFTY", "FINNIFTY"]:exchange==="BSE"?["BANKEX", "SENSEX"]:["CRUDEOIL"]}
           label=""
@@ -253,6 +258,7 @@ function Inputs(props: any) {
         </div>
         <div className="flex  gap-1 items-center">
         <CoustomSelect
+          default={expiry}
           placeholder="Select Expiry"
           options={expiries}
           label=""
@@ -273,7 +279,19 @@ function Inputs(props: any) {
               // console.log("object", tempStrikePrices);
             updateExpiry(v);
             updateStrikes(tempStrikePrices);
-
+            console.log(baseLTP, base);
+            if(base.symbol==="NIFTY" || base.symbol==="FINNIFTY" || base.symbol==="CRUDEOIL"){
+              //round off to nearest 50 and update callStrike and putStrike
+              const ltp = Math.round(baseLTP/50)*50;
+              updateCallStrike(ltp);
+              updatePutStrike(ltp);
+            }
+            else if(base.symbol==="BANKNIFTY" || base.symbol==="BANKEX" || base.symbol==="SENSEX" ){
+              //round off to nearest 100 and update callStrike and putStrike
+              const ltp = Math.round(baseLTP/100)*100;
+              updateCallStrike(ltp);
+              updatePutStrike(ltp);
+            }
           }}
         />
           </div>
@@ -288,6 +306,7 @@ function Inputs(props: any) {
 
         </div>
         <CoustomSelect
+          default={putStrike}
           placeholder="Select Strike"
           options={strikes}
           label="Put Strike"
