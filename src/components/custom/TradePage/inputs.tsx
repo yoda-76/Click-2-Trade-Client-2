@@ -56,6 +56,38 @@ function Inputs(props: any) {
     return quantity;
   }
 
+  const callStrikeChangeHandler = (v:number, expiry:string)=>{
+    Object.keys(optionsData[exchange][base.symbol]).map((op) => {
+      const option = optionsData[exchange][base.symbol][op];
+      const result = extractExpiryAndStrike(op);
+      if (result.expiryDate === expiry && result.strikePrice === v) {
+        updateCall({
+          symbol: option.CE.tradingsymbol,
+          key: option.CE.ltpToken,
+        });
+        subsribeToken(option.CE.ltpToken);
+        updateCallLTP(0);
+      }
+    })
+  }
+
+
+  const putStrikeChangeHandler = (v: number, expiry: string) => {
+    Object.keys(optionsData[exchange][base.symbol]).map((op) => {
+      const option = optionsData[exchange][base.symbol][op];
+      const result = extractExpiryAndStrike(op);
+      if (result.expiryDate === expiry && result.strikePrice === v) {
+        updatePut({
+          symbol: option.PE.tradingsymbol,
+          key: option.PE.ltpToken,
+        });
+        subsribeToken(option.PE.ltpToken);
+        updatePutLTP(0);
+
+      }
+    })
+  }
+
 
   
   return (
@@ -179,24 +211,7 @@ function Inputs(props: any) {
           setChange={(v: number) => {
             console.log(v, callStrike);
             updateCallStrike(v);
-            Object.keys(optionsData[exchange][base.symbol]).map((op) => {
-              const option = optionsData[exchange][base.symbol][op];
-              // console.log(option);
-              const result = extractExpiryAndStrike(op);
-              if (result.expiryDate === expiry && result.strikePrice === v) {
-                // console.log({
-                //   symbol: option.CE.tradingsymbol,
-                //   key: option.CE.ltpToken,
-                // });
-                updateCall({
-                  symbol: option.CE.tradingsymbol,
-                  key: option.CE.ltpToken,
-                });
-                subsribeToken(option.CE.ltpToken);
-                updateCallLTP(0);
-              }
-              
-            })
+            callStrikeChangeHandler(v, expiry);
           }}
           />
         <div className="flex flex-col items-center ">
@@ -279,18 +294,22 @@ function Inputs(props: any) {
               // console.log("object", tempStrikePrices);
             updateExpiry(v);
             updateStrikes(tempStrikePrices);
-            console.log(baseLTP, base);
             if(base.symbol==="NIFTY" || base.symbol==="FINNIFTY" || base.symbol==="CRUDEOIL"){
               //round off to nearest 50 and update callStrike and putStrike
               const ltp = Math.round(baseLTP/50)*50;
+
               updateCallStrike(ltp);
+              callStrikeChangeHandler(ltp, v);
               updatePutStrike(ltp);
+              putStrikeChangeHandler(ltp,v)
             }
             else if(base.symbol==="BANKNIFTY" || base.symbol==="BANKEX" || base.symbol==="SENSEX" ){
               //round off to nearest 100 and update callStrike and putStrike
               const ltp = Math.round(baseLTP/100)*100;
               updateCallStrike(ltp);
+              callStrikeChangeHandler(ltp, v);
               updatePutStrike(ltp);
+              putStrikeChangeHandler(ltp,v)
             }
           }}
         />
@@ -312,24 +331,8 @@ function Inputs(props: any) {
           label="Put Strike"
           setChange={(v: any) => {
             // props.setPutStrike(v);
-            updatePutStrike(v);
-            Object.keys(optionsData[exchange][base.symbol]).map((op) => {
-              const option = optionsData[exchange][base.symbol][op];
-              const result = extractExpiryAndStrike(op);
-              if (result.expiryDate === expiry && result.strikePrice === v) {
-                // console.log({
-                //   symbol: option.PE.tradingsymbol,
-                //   key: option.PE.ltpToken,
-                // })
-                updatePut({
-                  symbol: option.PE.tradingsymbol,
-                  key: option.PE.ltpToken,
-                });
-                subsribeToken(option.PE.ltpToken);
-                updatePutLTP(0);
-
-              }
-            })
+            updatePutStrike(v);   
+            putStrikeChangeHandler(v, expiry);
           }}
         />
         </div>
