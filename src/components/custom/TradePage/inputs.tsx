@@ -95,7 +95,7 @@ function Inputs(props: any) {
       <div className="flex justify-center gap-5  text-white  pr-4">
          <CoustomSelect
           default={exchange}
-          options={["NSE", "BSE", "MCX"]}
+          options={["NSE", "BSE"]}
           label="select exchange"
           setChange={(v: any) => { updateExchange(v) }}
         /> 
