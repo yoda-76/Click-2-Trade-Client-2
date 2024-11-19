@@ -86,7 +86,7 @@ export default function AngelAuth() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">M-Pin</Label>
                 <Input
                   className="text-white"
                   id="password"
@@ -96,7 +96,7 @@ export default function AngelAuth() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="totp">TOTP</Label>
+                <Label htmlFor="totp">OTP</Label>
                 <Input
                   className="text-white"
                   id="totp"

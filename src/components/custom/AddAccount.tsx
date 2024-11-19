@@ -17,6 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+
 interface FormValues {
   name_tag: string;
   u_id: string;
@@ -56,6 +58,18 @@ export default function AddAccount(props:{refresh:React.Dispatch<React.SetStateA
     // Handle form submission logic here
     // console.log(formValues);
     try {
+      if(formValues.name_tag === "" || formValues.u_id === "" || formValues.email === "" || formValues.key === "" || formValues.secret === "" || formValues.broker === "" || formValues.broker_id === "" || formValues.type === "" ){
+        toast.error("All fields are required", {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          position: "top-right",
+        });
+        return
+      } 
       
       const response = await axios.post(
         `${import.meta.env.VITE_server_url}/api/add-account`,
@@ -66,8 +80,16 @@ export default function AddAccount(props:{refresh:React.Dispatch<React.SetStateA
       console.log(response);
       props.refresh((prev:boolean)=>!prev)
       props.setAddAccountToggle((prev:boolean)=>!prev)
-    } catch (error) {
-      alert(error)
+    } catch (error:any) {
+      toast.error(error.response.data.error, {
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        position: "top-right",
+      });
     }
 
   };
@@ -83,6 +105,8 @@ export default function AddAccount(props:{refresh:React.Dispatch<React.SetStateA
 
   return (
     <div className="w-[80%] p-2">
+        <ToastContainer />
+
       <Card >
         <CardHeader>
           <CardTitle>Add Account</CardTitle>
@@ -128,6 +152,7 @@ export default function AddAccount(props:{refresh:React.Dispatch<React.SetStateA
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
+              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="broker">Select Broker</Label>
                 <Select 
                   onValueChange={(value) => {
@@ -148,7 +173,9 @@ export default function AddAccount(props:{refresh:React.Dispatch<React.SetStateA
                   </SelectContent>
                 </Select>
               </div>
-            
+              {formValues.broker==="UPSTOCKS" && <p>When you create an app on broker please enter <strong>"https://api.cliq2trade.com/api/upstox/auth"</strong> as redirect url.</p>}
+              </div>
+                  
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="broker_id">Your Client ID</Label>
                 <Input className="text-white" 
@@ -195,9 +222,7 @@ export default function AddAccount(props:{refresh:React.Dispatch<React.SetStateA
                 <></>
               )}
             </div>
-            <p>When you create an app on broker please enter "https://api.cliq2trade.com/api/(broker-name)/auth" as redirect url.</p>
-                <p>UPSTOX: "https://api.cliq2trade.com/api/upstox/auth"</p>
-                {/* <p>DHAN: "https://api.cliq2trade.com/api/dhan/auth"</p> */}
+            
           </CardContent>
           {/* {(formValues.broker==="DHAN" && formValues.type!=="" && formValues.u_id!=="")&& <DhanAuth />} */}
           <CardFooter className="flex justify-around">
