@@ -16,10 +16,7 @@ export default function OrderBook(props: any) {
           withCredentials: true, // Ensure cookies are sent with the request
         });
         console.log("orders fetched", resp.data);
-        const tempOrders = resp.data;
-        //reverse orders
-        tempOrders.reverse();
-        setOrders(tempOrders);
+        setOrders(resp.data);
       } catch (e) {
         console.log(e);
         setOrders([]);
