@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import useUserStore from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function ManageChild() {
   const {
@@ -69,7 +70,17 @@ export default function ManageChild() {
         // console.log(resp.data.childAccounts);
         setChildAccounts(resp.data.childAccounts);
       })
-      .catch((error) => console.log(error));
+      .catch(() => {
+        toast.error("complete master account auth", {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          position: "top-right",
+        });
+      });
   }, []);
 
   console.log(name, email);
@@ -93,7 +104,17 @@ export default function ManageChild() {
         .then((resp) => {
           setChildAccounts(resp.data.childAccounts);
         })
-        .catch((error) => console.log(error));
+        .catch(() => {
+          toast.error("complete master account auth", {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            position: "top-right",
+          });
+        });
     }
   }, [accountId]);
 
@@ -123,8 +144,16 @@ export default function ManageChild() {
             setChildAccounts(resp.data.childAccounts);
           });
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        toast.error("complete master account auth", {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          position: "top-right",
+        });
       });
   };
 
@@ -174,6 +203,7 @@ export default function ManageChild() {
   }
   return (
     <div>
+
       <div className="flex flex-col items-start bg-amber-100 p-2 w-[100%]">
         <h1 className=" flex justify-center font-bold ">Welcome: {name}</h1>
         <div className="w-[100%] flex justify-between">
@@ -203,6 +233,7 @@ export default function ManageChild() {
           </Button>
         </div>
       </div>
+            <ToastContainer />
       <div>
         {childAccounts &&
           childAccounts.map((a: any) => {
