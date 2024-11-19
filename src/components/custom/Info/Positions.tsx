@@ -49,29 +49,37 @@ export default function Positions() {
     <>
         <ToastContainer />
 
-      <div className="grid grid-cols-12 ">
+        <div className="grid grid-cols-2">
+      <div className="grid grid-cols-7 ">
         <div>Symbol Name</div>
         <div>Qty</div>
-        <div>pnl</div>
+        <div>r.pnl</div>
+        <div>ur.pnl</div>
         <div>ltp</div>
         <div>SL</div>
         <div>set SL</div>
+      </div>
+      <div className="grid grid-cols-7">
         <div>Target</div>
         <div>set Target</div>
         <div>TSL</div>
         <div>s2c</div>
-        <div>buy price</div>
+        <div>buy avg</div>
+        <div>sell avg</div>
         <div>Action</div>
+      </div>
       </div>
       <div className="bg-white w-[100%] p-[0.5px]"/>
       {position[0] && position.map((v: any) => {
         // console.log(v);
         return (
-          <div className="grid grid-cols-12">
+          <div className="grid grid-cols-2">
+            <div className="grid grid-cols-7">
             <div className="break-words">
               {v.symbolName ? v.symbolName : "---"}
             </div>
             <div>{v.netQty ? v.netQty : "-0-"}</div>
+            <div>{v.realisedPnL?v.realisedPnL:"-"}</div>
             <div>{v.pnl}</div>
             <div>{v.ltp ? v.ltp : "LTP"}</div>
             <div className="grid grid-cols-3">
@@ -93,6 +101,8 @@ export default function Positions() {
                 }
               }}
             />
+            </div>
+            <div className="grid grid-cols-7">
             <div className="grid grid-cols-3">
               <div className="hover:cursor-pointer hover:bg-black" onClick={() => decreaseTarget({ key: v.ltpToken})}>-</div>
               <div>{v.target ? v.target : "--"}</div>
@@ -125,6 +135,8 @@ export default function Positions() {
             }}>Sl 2 Cost</Button>:"---"}</div>
             
             <div>{v.buyPrice ? v.buyPrice : "---"}</div>
+            <div>{v.sellPrice ? v.sellPrice : "---"}</div>
+
 
             {v.netQty!=0?<Button onClick={() => {
               //call square off single api
@@ -160,6 +172,7 @@ export default function Positions() {
                 });
               })
             }}>Exit</Button>:<div>--</div>}
+            </div>
           </div>
         );
       })}
