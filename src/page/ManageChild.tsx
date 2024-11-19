@@ -61,7 +61,7 @@ export default function ManageChild() {
     axios
       .post(
         `${import.meta.env.VITE_server_url}/api/get-child-account-details`,
-        { master_u_id: id },
+        { master_u_id: `MASTER:${id}` },
         {
           withCredentials: true, // Ensure cookies are sent with the request
         }
@@ -96,7 +96,7 @@ export default function ManageChild() {
       axios
         .post(
           `${import.meta.env.VITE_server_url}/api/get-child-account-details`,
-          { master_u_id: accountId },
+          { master_u_id: `MASTER:${accountId}` },
           {
             withCredentials: true, // Ensure cookies are sent with the request
           }
@@ -135,7 +135,7 @@ export default function ManageChild() {
         axios
           .post(
             `${import.meta.env.VITE_server_url}/api/get-child-account-details`,
-            { master_u_id: accountId },
+            { master_u_id: `MASTER:${accountId}` },
             {
               withCredentials: true, // Ensure cookies are sent with the request
             }
@@ -174,7 +174,7 @@ export default function ManageChild() {
         axios
           .post(
             `${import.meta.env.VITE_server_url}/api/get-child-account-details`,
-            { master_u_id: accountId },
+            { master_u_id: `MASTER:${accountId}` },
             {
               withCredentials: true, // Ensure cookies are sent with the request
             }
