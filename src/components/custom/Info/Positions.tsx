@@ -32,7 +32,10 @@ export default function Positions() {
         }
       );
       console.log("orders fetched", resp.data);
-      updatePosition(resp.data);
+      const tempPosition = resp.data;
+      //reverse positions
+      tempPosition.reverse();
+      updatePosition(tempPosition);
       return
     } catch (e) {
       console.log(e);
