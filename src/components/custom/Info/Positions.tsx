@@ -75,7 +75,7 @@ export default function Positions() {
         return (
           <div className="grid grid-cols-2">
             <div className="grid grid-cols-7">
-            <div className="break-words">
+            <div className="break-words text-xs bg-gray-500 my-1 font-semibold">
               {v.symbolName ? v.symbolName : "---"}
             </div>
             <div>{v.netQty ? v.netQty : "-0-"}</div>
@@ -143,6 +143,7 @@ export default function Positions() {
               axios.post(`${import.meta.env.VITE_server_url}/api/square-off-single`, {
                 account_id: selected,
                 position: v,
+                ltp: v.ltp
               }, {
                 withCredentials: true, // Ensure cookies are sent with the request
               }).then(() => {

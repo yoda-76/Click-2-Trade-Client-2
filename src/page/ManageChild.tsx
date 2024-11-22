@@ -201,6 +201,36 @@ export default function ManageChild() {
       console.log(resp.data);
     });
   }
+  const getBrokerElement = (a: any) => {
+    const brokerConfig : any = {
+      DHAN: (
+        <Button onClick={() => navigate(`/dhan-auth?id=CHILD:${a.u_id}`)}>
+          DHAN AUTH
+        </Button>
+      ),
+      UPSTOCKS: (
+        <a
+          className="p-2 h-fit rounded-md text-white font-medium bg-cyan-600"
+          target="_blank"
+          href={`https://api.upstox.com/v2/login/authorization/dialog?response_type=code&client_id=${
+            a.key
+          }&redirect_uri=${import.meta.env.VITE_server_url}/api/upstox/auth&state=CHILD:${a.u_id}`}
+        >
+          Generate Token
+        </a>
+      ),
+      ANGEL: (
+        <Button onClick={() => navigate(`/angel-auth?id=CHILD:${a.u_id}`)}>
+          ANGEL AUTH
+        </Button>
+      ),
+      // Add more brokers here as needed
+    };
+  
+    return brokerConfig[a.broker] || (
+      <p className="text-red-600">Unsupported Broker</p>
+    );
+  };
   return (
     <div>
 
@@ -247,25 +277,13 @@ export default function ManageChild() {
                 <span><strong>Last Token Generated at: </strong>{JSON.stringify(a.last_token_generated_at)}</span>
                 </div>
                 <div className="flex gap-3">
-                {a.broker === "DHAN" ? <Button onClick={() => {
-                    navigate(`/dhan-auth?id=CHILD:${a.u_id}`);
-                  }}>DHAN AUTH</Button>:
-                  <a
-                    className="p-2 mx-1 h-fit rounded-md text-white font-medium font bg-cyan-600 "
-                    target="blank"
-                    href={`https://api.upstox.com/v2/login/authorization/dialog?response_type=code&client_id=${
-                      a.key
-                    }&redirect_uri=${
-                      import.meta.env.VITE_server_url
-                    }/api/upstox/auth&state=CHILD:${a.u_id}`}
-                  >
-                    Generate Token
-                  </a>}{" "}
+                
+                  {getBrokerElement(a)}
                   <span>{a.last_token_generated_at}</span>{" "}
                   <div className="bg-cyan-600">
                     <Button
                       onClick={() => changeMultiplier(a.u_id, a.multiplier + 1)}
-                    >
+                    > 
                       +
                     </Button>
                     {a.multiplier}

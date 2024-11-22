@@ -223,6 +223,7 @@ export default function Trade() {
           axios.post(`${import.meta.env.VITE_server_url}/api/square-off-single`, {
             account_id: selected,
             position: p,
+            ltp:ltp
           }, {
             withCredentials: true, // Ensure cookies are sent with the request
           }).then(()=>{
@@ -248,6 +249,7 @@ export default function Trade() {
           axios.post(`${import.meta.env.VITE_server_url}/api/square-off-single`, {
             account_id: selected,
             position: p,
+            ltp:ltp
           }, {
             withCredentials: true, // Ensure cookies are sent with the request
           }).then(()=>{

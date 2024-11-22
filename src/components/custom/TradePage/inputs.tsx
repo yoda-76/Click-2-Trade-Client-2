@@ -264,7 +264,21 @@ function Inputs(props: any) {
                 tempExpiryDates.push(result.expiryDate);
             });
             tempExpiryDates.sort((date1: string, date2: string) => new Date(date1).getTime() - new Date(date2).getTime());
-            updateExpiries(tempExpiryDates);
+            //filtering out the next 3 months expiry ; date formate : 2024-12-30
+            const currMonth = Number(tempExpiryDates[0].slice(5, 7));
+            let monthMatch = currMonth
+            let monthCount=1
+            const tempExpiryDates2 = []
+            for(let i=0;i<tempExpiryDates.length;i++){
+              const month = Number(tempExpiryDates[i].slice(5,7))
+              if(month!=monthMatch){
+                    monthMatch = month
+                    monthCount++
+                  }
+              tempExpiryDates2.push(tempExpiryDates[i])
+              if(monthCount>3) break
+            }
+            updateExpiries(tempExpiryDates2);
             updateStrikes([]);
             updateCallLTP(0);
             updatePutLTP(0);
