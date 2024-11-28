@@ -326,6 +326,7 @@ function Inputs(props: any) {
               });
               // console.log("object", tempStrikePrices);
             updateExpiry(v);
+            tempStrikePrices.sort((a, b) => a - b);
             updateStrikes(tempStrikePrices);
             if(base.symbol==="NIFTY" || base.symbol==="FINNIFTY" || base.symbol==="CRUDEOIL"){
               //round off to nearest 50 and update callStrike and putStrike
