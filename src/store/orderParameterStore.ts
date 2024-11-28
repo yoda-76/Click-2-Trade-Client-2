@@ -17,6 +17,12 @@ const orderParameterStore = (set: any) => ({
     marketProtection:10,
     preferedStopLossPoints:40,
     preferedTargetPoints:40,
+    instrumentType:"OPT" ,
+    updateInstrumentType: (data: "OPT" | "EQ") => {
+        set(() => ({
+            instrumentType: data
+        }))
+    },
     updateExchange: (data: string) => {
         set(() => ({
             exchange: data

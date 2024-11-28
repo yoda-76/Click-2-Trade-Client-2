@@ -16,7 +16,8 @@ export default function OrderBook(props: any) {
           withCredentials: true, // Ensure cookies are sent with the request
         });
         console.log("orders fetched", resp.data);
-        setOrders(resp.data);
+        const tempOrders = resp.data;
+        setOrders(tempOrders);
       } catch (e) {
         console.log(e);
         setOrders([]);
@@ -41,7 +42,7 @@ export default function OrderBook(props: any) {
         <div>Action</div>
       </div>
       <div className="bg-white w-[100%] p-[0.5px]"/>
-      {Object.keys(orders)[0] && Object.keys(orders).map(i=>{
+      {Object.keys(orders)[0] && Object.keys(orders).reverse().map(i=>{
         const v = orders[i].orderDetails
         console.log(v);
         return (

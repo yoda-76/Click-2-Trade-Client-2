@@ -72,10 +72,12 @@ export default function Trade() {
         // console.log("positions fetched", resp);
         updatePosition(resp.data);
         //subscribe to the positions
-        resp.data.map((p: any) => {
-          subsribeToken(p.ltpToken)
-          // console.log("subscribing to token", p.ltpToken);
-        })
+        if(resp.data[0]){
+          resp.data.map((p: any) => {
+            subsribeToken(p.ltpToken)
+            // console.log("subscribing to token", p.ltpToken);
+          })
+        }
       } catch (e) {
         console.log(e);
       }
@@ -178,7 +180,7 @@ export default function Trade() {
   }, []);
 
   useEffect(() => {
-    // console.log(feed[base?.key]);
+    // console.log(feed);
     var newBaseLTP = feed[base?.key]?.last_price;
     // console.log(newBaseLTP, "0");
     // if(!newBaseLTP){
@@ -193,8 +195,9 @@ export default function Trade() {
       updatePutLTP(feed[put.key]?.last_price);
         }
     //maintaning pnl
-    var mtm = 0
-    const updatedPosition = position.map(p=>{
+    var mtm = 0;
+    const updatedPosition = position[0]?
+     position.map(p=>{
       var ltp = 0
       try {
         ltp = feed[p.ltpToken]?.last_price;
@@ -276,7 +279,8 @@ export default function Trade() {
         mtm+=p.pnl
         return p
       }
-    })
+    }):
+    [];
 
     updateMtm(mtm)
 

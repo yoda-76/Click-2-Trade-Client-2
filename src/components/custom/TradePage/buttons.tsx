@@ -43,7 +43,8 @@ export default function Buttons(props: any) {
     expiry,
     callStrike,
     putStrike,
-    exchange
+    exchange,
+    instrumentType
   } = useOrderParameterStore((state) => ({ ...state }));
 
   const {
@@ -56,7 +57,7 @@ export default function Buttons(props: any) {
   } = useAccountStore((state) => ({ ...state }));
   const { updatePosition } = usePositionStore((state) => ({ ...state }));
   const {preferedSl, preferedTarget, updateSl, updateTarget}:{sl:any, target:any, mtmSl:any, mtmTarget:any, preferedSl:number|null, preferedTarget:number|null, updatePreferedSl:Function, updatePreferedTarget:Function, updateSl:Function, updateTarget:Function, updateMtmSl:Function, updateMtmTarget:Function, tslBase:any, updateTslBase:Function, mtmTslBase:any, updateMtmTslBase:Function}  = useSlStore((state) => ({...state}));
-  const {callLTP, putLTP} = useLtpStore((state) => ({...state}))
+  const {callLTP, putLTP, baseLTP} = useLtpStore((state) => ({...state}))
 
   const updatePositions = async () => {
     const { type} = extractId(selected);
@@ -81,21 +82,25 @@ export default function Buttons(props: any) {
   };
   const placeOrder = async (transaction_type: string, optionType: string) => {
     try {
+      let price = 0;
+      if(orderType === "LIMIT"){
+        price = triggerPrice
+      }else if(orderType === "LIMIT AT LTP"){
+        if(instrumentType === "OPT") price = optionType === "CE" ? callLTP : putLTP
+        else if(instrumentType === "EQ") price = baseLTP
+      }
       const res = await axios.post(
         `${import.meta.env.VITE_server_url}/api/place-order`,
         {
           accountId: selected,
           baseInstrument: base.symbol,
-          instrumentType: "OPT",
+          instrumentType,
           expiry: expiry,
-          strike: optionType === "CE" ? callStrike : putStrike,
+          strike: optionType != "EQ" ?optionType === "CE" ? callStrike : putStrike: 0,
           optionType: optionType,
           exchange,
           qty: quantity,
-          price:
-            orderType === "LIMIT"
-              ? triggerPrice
-              : 0,
+          price,
           triggerPrice: triggerPrice,
           orderType: orderType,
           side: transaction_type,
@@ -109,14 +114,25 @@ export default function Buttons(props: any) {
         console.log("done", res);
         //update sl
         //get ltpToken 
-        let ltpToken;
-        ltpToken = props.optionsData[exchange][base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}.0`][optionType].ltpToken
-        if(ltpToken && preferedSl && preferedTarget){
-          updateSl({key: ltpToken, value: optionType === "CE" ? callLTP-preferedSl : putLTP-preferedSl})
-          updateTarget({key: ltpToken, value: optionType === "CE" ? callLTP+preferedTarget : putLTP+preferedTarget})
+        if(instrumentType === "OPT"){
+          let ltpToken;
+          ltpToken = props.optionsData[exchange][base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}.0`][optionType].ltpToken
+          if(ltpToken && preferedSl && preferedTarget){
+            updateSl({key: ltpToken, value: optionType === "CE" ? callLTP-preferedSl : putLTP-preferedSl})
+            updateTarget({key: ltpToken, value: optionType === "CE" ? callLTP+preferedTarget : putLTP+preferedTarget})
+          }
+          updatePositions();
         }
-        
-        updatePositions();
+        else if(instrumentType === "EQ"){
+          let ltpToken;
+          ltpToken = props.optionsData[exchange].EQUITY[base.symbol].ltpToken
+          if(ltpToken && preferedSl && preferedTarget){
+            updateSl({key: ltpToken, value: optionType === "CE" ? callLTP-preferedSl : putLTP-preferedSl})
+            updateTarget({key: ltpToken, value: optionType === "CE" ? callLTP+preferedTarget : putLTP+preferedTarget})
+          }
+          updatePositions();
+        }
+
         //toast is not working
         toast.success(
           `Order : ${transaction_type} ${quantity} ${optionType==="CE"?call.key:put.key} ${productType} ${orderType} `,
@@ -197,25 +213,47 @@ export default function Buttons(props: any) {
 
   return (
     <div className="grid grid-cols-3 m-1">
+      {instrumentType === "OPT" ?
       <div className="flex-col flex  items-start">
-        <ToastContainer />
-        <Button
-          onClick={() => {
-            placeOrder("SELL", "CE");
-          }}
-          className="w-1/2 my-1"
-        >
-          Sell CE
-        </Button>
-        <Button
-          onClick={() => {
-            placeOrder("BUY", "CE");
-          }}
-          className="w-1/2 my-1"
-        >
-          Buy CE
-        </Button>
-      </div>
+      <ToastContainer />
+      <Button
+        onClick={() => {
+          placeOrder("SELL", "CE");
+        }}
+        className="w-1/2 my-1"
+      >
+        Sell CE
+      </Button>
+      <Button
+        onClick={() => {
+          placeOrder("BUY", "CE");
+        }}
+        className="w-1/2 my-1"
+      >
+        Buy CE
+      </Button>
+    </div> :
+
+    //for equity
+    <div className="flex-col flex  items-start">
+    <ToastContainer />
+    <Button
+      onClick={() => {
+        placeOrder("SELL", "EQ");
+      }}
+      className="w-1/2 my-1"
+    >
+      Sell
+    </Button>
+    <Button
+      onClick={() => {
+        placeOrder("BUY", "EQ");
+      }}
+      className="w-1/2 my-1"
+    >
+      Buy
+    </Button>
+  </div>}
       <div className="flex-col flex grid-cols-1 items-center">
         <Button
           className="my-1"
@@ -290,7 +328,7 @@ export default function Buttons(props: any) {
           SL to Cost
         </Button> */}
       </div>
-      <div className="flex flex-col  items-end">
+      {instrumentType === "OPT" && <div className="flex flex-col  items-end">
         <Button
           onClick={() => {
             placeOrder("SELL", "PE");
@@ -308,6 +346,7 @@ export default function Buttons(props: any) {
           Buy PE
         </Button>
       </div>
+}
     </div>
   );
 }

@@ -12,12 +12,13 @@ import useSlStore from "@/store/slStore";
 import axios from "axios";
 import useAccountStore from "@/store/accountStore";
 import { extractExpiryAndStrike } from "@/lib/extractExpiryAndStrike";
+import { equitySymbols } from "@/lib/equity-symbols";
 
 function Inputs(props: any) {
   const subsribeToken = (token: string)=>{
     props.socket.emit('subscribe', token);
   }
-  const {expiry, orderType, callStrike, exchange, putStrike, productType,  updateExpiry, updateCallStrike, updatePutStrike, updateQuantity, updateOrderType, updateProductType, updateTriggerPrice, updateExchange}=useOrderParameterStore((state) => ({...state}));
+  const {expiry, orderType, callStrike, exchange, putStrike, productType, instrumentType,  updateExpiry, updateCallStrike, updatePutStrike, updateQuantity, updateOrderType, updateProductType, updateTriggerPrice, updateExchange, updateInstrumentType}=useOrderParameterStore((state) => ({...state}));
   
   const {base, updateBase, updateCall, updatePut }=useSymbolStore((state) => ({base:state.base, updateCall:state.updateCall, updatePut:state.updatePut, updateBase:state.updateBase}));
   
@@ -42,6 +43,11 @@ function Inputs(props: any) {
     setPreferedSlState(preferedSl);
     setPreferedTargetState(preferedTarget);
   },[preferedSl, preferedTarget])
+
+  useEffect(() => {
+    console.log(base)
+  },[base])
+
   function getQuantityArray(lotSize: number, numberOfEntries: number = 4) {
     const quantity = [];
   
@@ -100,6 +106,8 @@ function Inputs(props: any) {
           setChange={(v: any) => { updateExchange(v) }}
         /> 
 
+      
+
 
         {/* <CoustomSelect
           options={["NIFTY", "BANKNIFTY", "FINNIFTY",...equitySymbols]}
@@ -138,7 +146,12 @@ function Inputs(props: any) {
         {/* {`${ strikes}`} */}
         
           {/* {`${ }`} */}
-        
+         <CoustomSelect
+          default={instrumentType}
+          options={["OPT", "EQ"]}
+          label="select exchange"
+          setChange={(v: any) => { updateInstrumentType(v) }}
+        /> 
           <div className="flex flex-col">
         <CoustomSelect
           default={productType}
@@ -158,7 +171,7 @@ function Inputs(props: any) {
         <CoustomSelect
           default={orderType}
           placeholder="Order Type"
-          options={["MARKET", "LIMIT"]}
+          options={["MARKET", "LIMIT", "LIMIT AT LTP"]}
           label=""
           setChange={(v: any) => { 
             updateOrderType(v)
@@ -221,7 +234,7 @@ function Inputs(props: any) {
         <CoustomSelect
         default={base.symbol}
           placeholder="Select Index"
-          options={exchange==="NSE"?["NIFTY", "BANKNIFTY", "FINNIFTY"]:exchange==="BSE"?["BANKEX", "SENSEX"]:["CRUDEOIL"]}
+          options={exchange==="NSE"?instrumentType==="OPT"?["NIFTY", "BANKNIFTY", "FINNIFTY"]:equitySymbols:exchange==="BSE"?["BANKEX", "SENSEX"]:["CRUDEOIL"]}
           label=""
           setChange={(v: any) => {
             var newBase={symbol:"", key:""}
@@ -252,11 +265,16 @@ function Inputs(props: any) {
               updateBase(newBase);
               subsribeToken(newBase.key);
             }else{
-              newBase={ symbol: v, key: optionsData[exchange].EQUITY[v].instrument_key }
+              newBase={ symbol: v, key: optionsData[exchange].EQUITY[v].ltpToken }
+              setQuantityList(getQuantityArray(1,300));
               updateBase(newBase);
+              subsribeToken(newBase.key);
+
+
             } 
             
-            let tempExpiryDates: string[] = [];
+            if(instrumentType==="OPT"){
+              let tempExpiryDates: string[] = [];
             // console.log("optionsData",optionsData);
             Object.keys(optionsData[exchange][newBase.symbol]).map((op) => {
             const result = extractExpiryAndStrike(op);
@@ -282,6 +300,7 @@ function Inputs(props: any) {
             updateStrikes([]);
             updateCallLTP(0);
             updatePutLTP(0);
+            }
           }}
         />
         </div>
