@@ -68,7 +68,7 @@ function Inputs(props: any) {
       const result = extractExpiryAndStrike(op);
       if (result.expiryDate === expiry && result.strikePrice === v) {
         updateCall({
-          symbol: option.CE.tradingsymbol,
+          symbol: option.CE.trading_symbol,
           key: option.CE.ltpToken,
         });
         subsribeToken(option.CE.ltpToken);
@@ -84,7 +84,7 @@ function Inputs(props: any) {
       const result = extractExpiryAndStrike(op);
       if (result.expiryDate === expiry && result.strikePrice === v) {
         updatePut({
-          symbol: option.PE.tradingsymbol,
+          symbol: option.PE.trading_symbol,
           key: option.PE.ltpToken,
         });
         subsribeToken(option.PE.ltpToken);

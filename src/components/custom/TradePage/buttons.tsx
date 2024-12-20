@@ -116,7 +116,7 @@ export default function Buttons(props: any) {
         //get ltpToken 
         if(instrumentType === "OPT"){
           let ltpToken;
-          ltpToken = props.optionsData[exchange][base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}.0`][optionType].ltpToken
+          ltpToken = props.optionsData[exchange][base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}`][optionType].ltpToken
           if(ltpToken && preferedSl && preferedTarget){
             updateSl({key: ltpToken, value: optionType === "CE" ? callLTP-preferedSl : putLTP-preferedSl})
             updateTarget({key: ltpToken, value: optionType === "CE" ? callLTP+preferedTarget : putLTP+preferedTarget})
