@@ -9,7 +9,7 @@ export default function LtpDisplay() {
   const {instrumentType} = useOrderParameterStore((state) => ({...state}));
   return (
     <div className="flex justify-between m-1 mt-4 text-white">
-      {instrumentType==="OPT"&&<div className="flex-col flex  items-start">
+      {<div className="flex-col flex  items-start">
         <div className=" flex ">
           Symbol : <div>{call.symbol}</div>
           {/* Key: <div>{call.key}</div> */}
@@ -25,7 +25,7 @@ export default function LtpDisplay() {
           <div>{baseLTP}</div>
         </div>
       </div>
-      {instrumentType==="OPT"&&<div className="flex flex-col  items-end ">
+      {instrumentType==="IDX-OPT"&&<div className="flex flex-col  items-end ">
         <div className=" flex ">
           Symbol : <div>{put.symbol}</div>
           {/* Key: <div>{put.key}</div> */}

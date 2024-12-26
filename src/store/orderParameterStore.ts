@@ -17,8 +17,8 @@ const orderParameterStore = (set: any) => ({
     marketProtection:10,
     preferedStopLossPoints:40,
     preferedTargetPoints:40,
-    instrumentType:"OPT" ,
-    updateInstrumentType: (data: "OPT" | "EQ") => {
+    instrumentType:"IDX-OPT" ,
+    updateInstrumentType: (data: "IDX-OPT"|"IDX-FUT"|"EQ-FUT"|"EQ-OPT"|"EQ") => {
         set(() => ({
             instrumentType: data
         }))

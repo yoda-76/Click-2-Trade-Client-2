@@ -86,9 +86,24 @@ export default function Buttons(props: any) {
       if(orderType === "LIMIT"){
         price = triggerPrice
       }else if(orderType === "LIMIT AT LTP"){
-        if(instrumentType === "OPT") price = optionType === "CE" ? callLTP : putLTP
+        if(instrumentType === "IDX-OPT") price = optionType === "CE" ? callLTP : putLTP
         else if(instrumentType === "EQ") price = baseLTP
       }
+      console.log({
+        accountId: selected,
+        baseInstrument: base.symbol,
+        instrumentType,
+        expiry: expiry,
+        strike: optionType != "EQ" ?optionType === "CE" ? callStrike : putStrike: 0,
+        optionType: optionType,
+        exchange,
+        qty: quantity,
+        price,
+        triggerPrice: triggerPrice,
+        orderType: orderType,
+        side: transaction_type,
+        productType: productType,
+      })
       const res = await axios.post(
         `${import.meta.env.VITE_server_url}/api/place-order`,
         {
@@ -213,7 +228,7 @@ export default function Buttons(props: any) {
 
   return (
     <div className="grid grid-cols-3 m-1">
-      {instrumentType === "OPT" ?
+      {(instrumentType==="IDX-OPT" || instrumentType==="EQ-OPT")?
       <div className="flex-col flex  items-start">
       <ToastContainer />
       <Button
@@ -328,7 +343,7 @@ export default function Buttons(props: any) {
           SL to Cost
         </Button> */}
       </div>
-      {instrumentType === "OPT" && <div className="flex flex-col  items-end">
+      {(instrumentType==="IDX-OPT" || instrumentType==="EQ-OPT") && <div className="flex flex-col  items-end">
         <Button
           onClick={() => {
             placeOrder("SELL", "PE");

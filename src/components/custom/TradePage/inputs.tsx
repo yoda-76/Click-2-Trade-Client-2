@@ -77,6 +77,23 @@ function Inputs(props: any) {
     })
   }
 
+  const futureChangeHandler = (type: "IDX" | "EQ", expiry: string) => {
+    if(!base.symbol) throw new Error("Please select underlying symbol first.");
+    if (type === "IDX") {
+      console.log(type, expiry, base.symbol);
+      const key= optionsData[exchange].FUTURES[base.symbol][`${expiry} : 0`].ltpToken;
+      const symbol= optionsData[exchange].FUTURES[base.symbol][`${expiry} : 0`].trading_symbol;
+      updateCall({symbol: symbol, key: key});
+      updateExpiry(expiry);
+    } else {
+      const key= optionsData[exchange].FUTURES.EQUITY[base.symbol][expiry].PE.ltpToken;
+      const symbol= optionsData[exchange].FUTURES.EQUITY[base.symbol][expiry].CE.trading_symbol;
+
+      updateCall({symbol: symbol, key: key});
+      updateExpiry(expiry);
+    }
+  }
+
 
   const putStrikeChangeHandler = (v: number, expiry: string) => {
     Object.keys(optionsData[exchange][base.symbol]).map((op) => {
@@ -102,7 +119,7 @@ function Inputs(props: any) {
          <CoustomSelect
           default={exchange}
           options={["NSE", "BSE"]}
-          label="select exchange"
+          label="Exchange"
           setChange={(v: any) => { updateExchange(v) }}
         /> 
 
@@ -148,8 +165,8 @@ function Inputs(props: any) {
           {/* {`${ }`} */}
          <CoustomSelect
           default={instrumentType}
-          options={["OPT", "EQ"]}
-          label="select exchange"
+          options={["IDX-OPT", "IDX-FUT", "EQ", "EQ-FUT", "EQ-OPT" ]}
+          label="Instrument Type"
           setChange={(v: any) => { updateInstrumentType(v) }}
         /> 
           <div className="flex flex-col">
@@ -234,7 +251,7 @@ function Inputs(props: any) {
         <CoustomSelect
         default={base.symbol}
           placeholder="Select Index"
-          options={exchange==="NSE"?instrumentType==="OPT"?["NIFTY", "BANKNIFTY", "FINNIFTY"]:equitySymbols:exchange==="BSE"?["BANKEX", "SENSEX"]:["CRUDEOIL"]}
+          options={exchange==="NSE"?(instrumentType==="IDX-OPT" || instrumentType==="IDX-FUT")?["NIFTY", "BANKNIFTY", "FINNIFTY"]:equitySymbols:exchange==="BSE"?(instrumentType==="IDX-OPT" || instrumentType==="IDX-FUT")?["BANKEX", "SENSEX"]:equitySymbols:["CRUDEOIL"]}
           label=""
           setChange={(v: any) => {
             var newBase={symbol:"", key:""}
@@ -273,7 +290,7 @@ function Inputs(props: any) {
 
             } 
             
-            if(instrumentType==="OPT"){
+            if(instrumentType==="IDX-OPT"){
               let tempExpiryDates: string[] = [];
             // console.log("optionsData",optionsData);
             Object.keys(optionsData[exchange][newBase.symbol]).map((op) => {
@@ -301,6 +318,32 @@ function Inputs(props: any) {
             updateCallLTP(0);
             updatePutLTP(0);
             }
+            else if(instrumentType==="IDX-FUT"){
+              let tempExpiryDates: string[] = [];
+            // console.log("optionsData",optionsData);
+            Object.keys(optionsData[exchange].FUTURES[newBase.symbol]).map((op) => {
+            const result = extractExpiryAndStrike(op);
+            if (!tempExpiryDates.includes(result.expiryDate))
+                tempExpiryDates.push(result.expiryDate);
+            });
+            tempExpiryDates.sort((date1: string, date2: string) => new Date(date1).getTime() - new Date(date2).getTime());
+            //filtering out the next 3 months expiry ; date formate : 2024-12-30
+            const currMonth = Number(tempExpiryDates[0].slice(5, 7));
+            let monthMatch = currMonth
+            let monthCount=1
+            const tempExpiryDates2 = []
+            for(let i=0;i<tempExpiryDates.length;i++){
+              const month = Number(tempExpiryDates[i].slice(5,7))
+              if(month!=monthMatch){
+                    monthMatch = month
+                    monthCount++
+                  }
+              tempExpiryDates2.push(tempExpiryDates[i])
+              if(monthCount>3) break
+            }
+            updateExpiries(tempExpiryDates2);
+            
+            }
           }}
         />
         </div>
@@ -311,40 +354,49 @@ function Inputs(props: any) {
           options={expiries}
           label=""
           setChange={(v: any) => {
-            let tempStrikePrices: number[] = [];
-            // console.log(base);
-            Object.keys(optionsData[exchange][base.symbol]).map((op) => {
-              const result = extractExpiryAndStrike(op);
-              // tempExpiryDates.push(result.expiryDate);
-              // console.log(result.expiryDate === expiry ,!tempStrikePrices.includes(result.strikePrice));
-              if (
-                result.expiryDate === v                                      
-              ){
-                // console.log(result);
-                tempStrikePrices.push(result.strikePrice);}
-                // tempStrikePrices.push(result.strikePrice);
-              });
-              // console.log("object", tempStrikePrices);
-            updateExpiry(v);
-            tempStrikePrices.sort((a, b) => a - b);
-            updateStrikes(tempStrikePrices);
-            if(base.symbol==="NIFTY" || base.symbol==="FINNIFTY" || base.symbol==="CRUDEOIL"){
-              //round off to nearest 50 and update callStrike and putStrike
-              const ltp = Math.round(baseLTP/50)*50;
-
-              updateCallStrike(ltp);
-              callStrikeChangeHandler(ltp, v);
-              updatePutStrike(ltp);
-              putStrikeChangeHandler(ltp,v)
+            if(instrumentType==="IDX-OPT"){
+              let tempStrikePrices: number[] = [];
+              // console.log(base);
+              Object.keys(optionsData[exchange][base.symbol]).map((op) => {
+                const result = extractExpiryAndStrike(op);
+                // tempExpiryDates.push(result.expiryDate);
+                // console.log(result.expiryDate === expiry ,!tempStrikePrices.includes(result.strikePrice));
+                if (
+                  result.expiryDate === v                                      
+                ){
+                  // console.log(result);
+                  tempStrikePrices.push(result.strikePrice);}
+                  // tempStrikePrices.push(result.strikePrice);
+                });
+                // console.log("object", tempStrikePrices);
+              updateExpiry(v);
+              tempStrikePrices.sort((a, b) => a - b);
+              updateStrikes(tempStrikePrices);
+              if(base.symbol==="NIFTY" || base.symbol==="FINNIFTY" || base.symbol==="CRUDEOIL"){
+                //round off to nearest 50 and update callStrike and putStrike
+                const ltp = Math.round(baseLTP/50)*50;
+  
+                updateCallStrike(ltp);
+                callStrikeChangeHandler(ltp, v);
+                updatePutStrike(ltp);
+                putStrikeChangeHandler(ltp,v)
+              }
+              else if(base.symbol==="BANKNIFTY" || base.symbol==="BANKEX" || base.symbol==="SENSEX" ){
+                //round off to nearest 100 and update callStrike and putStrike
+                const ltp = Math.round(baseLTP/100)*100;
+                updateCallStrike(ltp);
+                callStrikeChangeHandler(ltp, v);
+                updatePutStrike(ltp);
+                putStrikeChangeHandler(ltp,v)
+              }
+            }else if(instrumentType==="IDX-FUT"){
+              console.log("expiry change when instrument type is IDX-FUT");
+              updateExpiry(v);
+              updateStrikes([]);
+              updateCallLTP(0);
+              futureChangeHandler("IDX",v);
             }
-            else if(base.symbol==="BANKNIFTY" || base.symbol==="BANKEX" || base.symbol==="SENSEX" ){
-              //round off to nearest 100 and update callStrike and putStrike
-              const ltp = Math.round(baseLTP/100)*100;
-              updateCallStrike(ltp);
-              callStrikeChangeHandler(ltp, v);
-              updatePutStrike(ltp);
-              putStrikeChangeHandler(ltp,v)
-            }
+            
           }}
         />
           </div>
@@ -358,7 +410,7 @@ function Inputs(props: any) {
         </div>
 
         </div>
-        <CoustomSelect
+        {(instrumentType==="IDX-OPT" || instrumentType==="EQ-OPT")?<CoustomSelect
           default={putStrike}
           placeholder="Select Strike"
           options={strikes}
@@ -368,7 +420,7 @@ function Inputs(props: any) {
             updatePutStrike(v);   
             putStrikeChangeHandler(v, expiry);
           }}
-        />
+        />:<div className="w-1 h-1"></div>}
         </div>
     </>
   );
