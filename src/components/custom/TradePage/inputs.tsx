@@ -63,18 +63,37 @@ function Inputs(props: any) {
   }
 
   const callStrikeChangeHandler = (v:number, expiry:string)=>{
-    Object.keys(optionsData[exchange][base.symbol]).map((op) => {
-      const option = optionsData[exchange][base.symbol][op];
-      const result = extractExpiryAndStrike(op);
-      if (result.expiryDate === expiry && result.strikePrice === v) {
-        updateCall({
-          symbol: option.CE.trading_symbol,
-          key: option.CE.ltpToken,
-        });
-        subsribeToken(option.CE.ltpToken);
-        updateCallLTP(0);
-      }
-    })
+    if(instrumentType==="IDX-OPT"){
+      Object.keys(optionsData[exchange][base.symbol]).map((op) => {
+        const option = optionsData[exchange][base.symbol][op];
+        const result = extractExpiryAndStrike(op);
+        if (result.expiryDate === expiry && result.strikePrice === v) {
+          updateCall({
+            symbol: option.CE.trading_symbol,
+            key: option.CE.ltpToken,
+          });
+          subsribeToken(option.CE.ltpToken);
+          updateCallLTP(0);
+        }
+      })
+    }else if(instrumentType==="EQ-OPT"){
+      Object.keys(optionsData[exchange].EQUITY_OPTION[base.symbol]).map((op) => {
+        const option = optionsData[exchange].EQUITY_OPTION[base.symbol][op];
+        const result = extractExpiryAndStrike(op);
+        if (result.expiryDate === expiry && result.strikePrice === v) {
+          console.log({
+            symbol: option.CE.trading_symbol,
+            key: option.CE.ltpToken,
+          })
+          updateCall({
+            symbol: option.CE.trading_symbol,
+            key: option.CE.ltpToken,
+          });
+          subsribeToken(option.CE.ltpToken);
+          updateCallLTP(0);
+        }
+      })
+    }
   }
 
   const futureChangeHandler = (type: "IDX" | "EQ", expiry: string) => {
@@ -83,33 +102,54 @@ function Inputs(props: any) {
       console.log(type, expiry, base.symbol);
       const key= optionsData[exchange].FUTURES[base.symbol][`${expiry} : 0`].ltpToken;
       const symbol= optionsData[exchange].FUTURES[base.symbol][`${expiry} : 0`].trading_symbol;
+      subsribeToken(key);
       updateCall({symbol: symbol, key: key});
       updateExpiry(expiry);
     } else {
-      const key= optionsData[exchange].FUTURES.EQUITY[base.symbol][expiry].PE.ltpToken;
-      const symbol= optionsData[exchange].FUTURES.EQUITY[base.symbol][expiry].CE.trading_symbol;
-
+      console.log(optionsData[exchange].FUTURES.EQUITY[base.symbol])
+      const key= optionsData[exchange].FUTURES.EQUITY[base.symbol][`${expiry} : 0`].ltpToken;
+      const symbol= optionsData[exchange].FUTURES.EQUITY[base.symbol][`${expiry} : 0`].trading_symbol;
       updateCall({symbol: symbol, key: key});
+      subsribeToken(key);
       updateExpiry(expiry);
     }
   }
 
 
   const putStrikeChangeHandler = (v: number, expiry: string) => {
-    Object.keys(optionsData[exchange][base.symbol]).map((op) => {
-      const option = optionsData[exchange][base.symbol][op];
-      const result = extractExpiryAndStrike(op);
-      if (result.expiryDate === expiry && result.strikePrice === v) {
-        updatePut({
-          symbol: option.PE.trading_symbol,
-          key: option.PE.ltpToken,
-        });
-        subsribeToken(option.PE.ltpToken);
-        updatePutLTP(0);
-
-      }
-    })
-  }
+    if(instrumentType==="IDX-OPT"){
+      Object.keys(optionsData[exchange][base.symbol]).map((op) => {
+        const option = optionsData[exchange][base.symbol][op];
+        const result = extractExpiryAndStrike(op);
+        if (result.expiryDate === expiry && result.strikePrice === v) {
+          updatePut({
+            symbol: option.PE.trading_symbol,
+            key: option.PE.ltpToken,
+          });
+          subsribeToken(option.PE.ltpToken);
+          updatePutLTP(0);
+  
+        }
+      })
+    }else if(instrumentType==="EQ-OPT"){
+      Object.keys(optionsData[exchange].EQUITY_OPTION[base.symbol]).map((op) => {
+        const option = optionsData[exchange].EQUITY_OPTION[base.symbol][op];
+        const result = extractExpiryAndStrike(op);
+        if (result.expiryDate === expiry && result.strikePrice === v) {
+          console.log({
+            symbol: option.PE.trading_symbol,
+            key: option.PE.ltpToken,
+          })
+          updatePut({
+            symbol: option.PE.trading_symbol,
+            key: option.PE.ltpToken,
+          });
+          subsribeToken(option.PE.ltpToken);
+          updatePutLTP(0);
+        }
+      })
+  } 
+}
 
 
   
@@ -283,7 +323,7 @@ function Inputs(props: any) {
               subsribeToken(newBase.key);
             }else{
               newBase={ symbol: v, key: optionsData[exchange].EQUITY[v].ltpToken }
-              setQuantityList(getQuantityArray(1,300));
+              setQuantityList(getQuantityArray(optionsData[exchange].EQUITY[v].lot_size,300));
               updateBase(newBase);
               subsribeToken(newBase.key);
 
@@ -317,6 +357,8 @@ function Inputs(props: any) {
             updateStrikes([]);
             updateCallLTP(0);
             updatePutLTP(0);
+            setQuantityList(getQuantityArray(optionsData[exchange][newBase.symbol][Object.keys(optionsData[exchange][newBase.symbol])[0]].CE.lot_size,300));
+
             }
             else if(instrumentType==="IDX-FUT"){
               let tempExpiryDates: string[] = [];
@@ -342,8 +384,67 @@ function Inputs(props: any) {
               if(monthCount>3) break
             }
             updateExpiries(tempExpiryDates2);
+            setQuantityList(getQuantityArray(optionsData[exchange].FUTURES[newBase.symbol][Object.keys(optionsData[exchange].FUTURES[newBase.symbol])[0]].lot_size,300));
+
             
+            }else if(instrumentType==="EQ-OPT"){
+              
+              let tempExpiryDates: string[] = [];
+            // console.log("optionsData",optionsData);
+            Object.keys(optionsData[exchange].EQUITY_OPTION[newBase.symbol]).map((op) => {
+              const result = extractExpiryAndStrike(op);
+              if (!tempExpiryDates.includes(result.expiryDate))
+                tempExpiryDates.push(result.expiryDate);
+            });
+            tempExpiryDates.sort((date1: string, date2: string) => new Date(date1).getTime() - new Date(date2).getTime());
+            //filtering out the next 3 months expiry ; date formate : 2024-12-30
+            const currMonth = Number(tempExpiryDates[0].slice(5, 7)); 
+            let monthMatch = currMonth
+            let monthCount=1
+            const tempExpiryDates2 = []
+            for(let i=0;i<tempExpiryDates.length;i++){
+              const month = Number(tempExpiryDates[i].slice(5,7))
+              if(month!=monthMatch){
+                monthMatch = month
+                monthCount++
+              }
+              tempExpiryDates2.push(tempExpiryDates[i])
+              console.log(tempExpiryDates2)
+              if(monthCount>3) break
             }
+            updateExpiries(tempExpiryDates2);
+            console.log(optionsData[exchange].EQUITY_OPTION[newBase.symbol])
+            setQuantityList(getQuantityArray(optionsData[exchange].EQUITY_OPTION[newBase.symbol][Object.keys(optionsData[exchange].EQUITY_OPTION[newBase.symbol])[0]].CE.lot_size,300));
+
+
+            }else if(instrumentType==="EQ-FUT"){
+              let tempExpiryDates: string[] = [];
+            // console.log("optionsData",optionsData);
+            Object.keys(optionsData[exchange].FUTURES.EQUITY[newBase.symbol]).map((op) => {
+            const result = extractExpiryAndStrike(op);
+            if (!tempExpiryDates.includes(result.expiryDate))
+                tempExpiryDates.push(result.expiryDate);
+            });
+            tempExpiryDates.sort((date1: string, date2: string) => new Date(date1).getTime() - new Date(date2).getTime());
+            //filtering out the next 3 months expiry ; date formate : 2024-12-30
+            const currMonth = Number(tempExpiryDates[0].slice(5, 7));
+            let monthMatch = currMonth
+            let monthCount=1
+            const tempExpiryDates2 = []
+            for(let i=0;i<tempExpiryDates.length;i++){
+              const month = Number(tempExpiryDates[i].slice(5,7))
+              if(month!=monthMatch){
+                    monthMatch = month
+                    monthCount++
+                  }
+              tempExpiryDates2.push(tempExpiryDates[i])
+              if(monthCount>3) break
+            }
+            updateExpiries(tempExpiryDates2);
+            setQuantityList(getQuantityArray(optionsData[exchange].FUTURES.EQUITY[newBase.symbol][Object.keys(optionsData[exchange].FUTURES.EQUITY[newBase.symbol])[0]].lot_size,300));
+
+            }
+            
           }}
         />
         </div>
@@ -395,6 +496,42 @@ function Inputs(props: any) {
               updateStrikes([]);
               updateCallLTP(0);
               futureChangeHandler("IDX",v);
+            }else if(instrumentType==="EQ-OPT"){
+              let tempStrikePrices: number[] = [];
+              Object.keys(optionsData[exchange].EQUITY_OPTION[base.symbol]).map((op) => {
+                const result = extractExpiryAndStrike(op);
+                // tempExpiryDates.push(result.expiryDate);
+                // console.log(result.expiryDate === expiry ,!tempStrikePrices.includes(result.strikePrice));
+                if (
+                  result.expiryDate === v                                      
+                ){
+                  // console.log(result);
+                  tempStrikePrices.push(result.strikePrice);}
+                  // tempStrikePrices.push(result.strikePrice);
+                });
+                // console.log("object", tempStrikePrices);
+              updateExpiry(v);
+              tempStrikePrices.sort((a, b) => a - b);
+              updateStrikes(tempStrikePrices);
+              console.log(baseLTP, tempStrikePrices)
+              let ltp = 0;
+              for(let i =0; i<tempStrikePrices.length; i++){
+                if(tempStrikePrices[i]>baseLTP){
+                  ltp=tempStrikePrices[i]
+                  break
+                } 
+              }
+
+              updateCallStrike(ltp);
+              callStrikeChangeHandler(ltp, v);
+              updatePutStrike(ltp);
+              putStrikeChangeHandler(ltp,v)
+            }else if(instrumentType==="EQ-FUT"){
+              console.log("expiry change when instrument type is EQ-FUT");
+              updateExpiry(v);
+              updateStrikes([]);
+              updateCallLTP(0);
+              futureChangeHandler("EQ",v);
             }
             
           }}

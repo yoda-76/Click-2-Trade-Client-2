@@ -25,7 +25,7 @@ export default function LtpDisplay() {
           <div>{baseLTP}</div>
         </div>
       </div>
-      {instrumentType==="IDX-OPT"&&<div className="flex flex-col  items-end ">
+      {(instrumentType==="IDX-OPT"||instrumentType==="EQ-OPT")&&<div className="flex flex-col  items-end ">
         <div className=" flex ">
           Symbol : <div>{put.symbol}</div>
           {/* Key: <div>{put.key}</div> */}

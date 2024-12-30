@@ -89,21 +89,6 @@ export default function Buttons(props: any) {
         if(instrumentType === "IDX-OPT") price = optionType === "CE" ? callLTP : putLTP
         else if(instrumentType === "EQ") price = baseLTP
       }
-      console.log({
-        accountId: selected,
-        baseInstrument: base.symbol,
-        instrumentType,
-        expiry: expiry,
-        strike: optionType != "EQ" ?optionType === "CE" ? callStrike : putStrike: 0,
-        optionType: optionType,
-        exchange,
-        qty: quantity,
-        price,
-        triggerPrice: triggerPrice,
-        orderType: orderType,
-        side: transaction_type,
-        productType: productType,
-      })
       const res = await axios.post(
         `${import.meta.env.VITE_server_url}/api/place-order`,
         {
@@ -129,7 +114,7 @@ export default function Buttons(props: any) {
         console.log("done", res);
         //update sl
         //get ltpToken 
-        if(instrumentType === "OPT"){
+        if(instrumentType === "IDX-OPT"){
           let ltpToken;
           ltpToken = props.optionsData[exchange][base.symbol][`${expiry} : ${optionType === "CE" ? callStrike : putStrike}`][optionType].ltpToken
           if(ltpToken && preferedSl && preferedTarget){

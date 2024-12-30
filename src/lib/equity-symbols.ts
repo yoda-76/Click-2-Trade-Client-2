@@ -1,4 +1,5 @@
-export const equitySymbols = ["AARTIIND",
+export const equitySymbols = ["YESBANK",
+    "AARTIIND",
     "ABB",
     "ABBOTINDIA",
     "ABCAPITAL",
